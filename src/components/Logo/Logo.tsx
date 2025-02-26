@@ -1,26 +1,20 @@
-import React from "react";
-import logoImg from "../../images/logo.png";
-import logoLightImg from "../../images/logo-light.png";
-import LogoSvg from "./LogoSvg";
+import MassaLogo from "../../images/massa.jpg";
 import { Link } from "react-router-dom";
 
-export interface LogoProps {
-  img?: string;
-  imgLight?: string;
-}
-
-const Logo: React.FC<LogoProps> = ({
-  img = logoImg,
-  imgLight = logoLightImg,
-}) => {
+const Logo = ({}) => {
   return (
     <Link
       to="/"
       className="ttnc-logo inline-block text-primary-6000 flex-shrink-0"
     >
-      {/* THIS USE FOR MY MULTI DEMO */}
-      {/* IF YOU ARE MY CLIENT. PLESE DELETE THIS CODE AND YOU YOUR IMAGE PNG BY BELLOW CODE */}
-      <LogoSvg />
+      <img
+        src={MassaLogo}
+        alt="logo"
+        width={50}
+        height={50}
+        style={{ borderRadius: "50%" }}
+      />
+      {/* <LogoSvg /> */}
     </Link>
   );
 };

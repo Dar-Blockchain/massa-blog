@@ -24,19 +24,19 @@ const LandingPage: React.FC = () => {
           className="pt-10 pb-16 md:py-16 lg:pb-28 lg:pt-20"
           heading={
             <span>
-              Far from face <br /> but not from {` `}
+              Voices unbound <br /> etched on {` `}
               <span className="relative pr-3">
                 <img
                   className="w-full absolute top-1/2 -start-1 transform -translate-y-1/2"
                   src={Vector1}
                   alt=""
                 />
-                <span className="relative">heart</span>
+                <span className="relative">Massa</span>
               </span>
             </span>
           }
-          btnText="Getting started"
-          subHeading="Let stay at home and share with everyone the most beautiful stories in your hometown 🎈"
+          btnText="Start Sharing"
+          subHeading="A decentralized space where your stories thrive, owned by no one, shared by all—powered by Massa 🎉"
         />
 
         <SectionGridCategoryBox
