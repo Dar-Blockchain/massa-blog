@@ -1,19 +1,13 @@
 import React from "react";
-
 import rightImg from "../images/hero-right.png";
 import Vector1 from "../images/Vector1.png";
-
-import { DEMO_POSTS } from "../data/posts";
 import { DEMO_CATEGORIES } from "../data/taxonomies";
 import SectionHero from "../components/SectionHero/SectionHero";
-import SectionGridCategoryBox from "../components/SectionGridCategoryBox/SectionGridCategoryBox";
 import BackgroundSection from "../components/BackgroundSection/BackgroundSection";
-import SectionMagazine5 from "../components/Sections/SectionMagazine5";
-
-// DEMO DATA
-const POSTS = DEMO_POSTS;
-const MAGAZINE1_POSTS = POSTS.filter((_, i) => i >= 0 && i < 8);
-//
+import SectionSliderNewCategories from "../components/SectionSliderNewCategories/SectionSliderNewCategories";
+import { DEMO_AUTHORS } from "../data/authors";
+import SectionSliderNewAuthors from "../components/SectionSliderNewAthors/SectionSliderNewAuthors";
+import SectionBecomeAnAuthor from "../components/SectionBecomeAnAuthor/SectionBecomeAnAuthor";
 
 const LandingPage: React.FC = () => {
   return (
@@ -39,40 +33,13 @@ const LandingPage: React.FC = () => {
           subHeading="A decentralized space where your stories thrive, owned by no one, shared by all—powered by Massa 🎉"
         />
 
-        <SectionGridCategoryBox
-          headingCenter={false}
-          categoryCardType="card2"
-          className="pb-16 lg:pb-28"
+        <SectionSliderNewCategories
+          className="py-16 lg:py-28"
+          heading="Most popular topics"
+          subHeading="Dive into Various Themes"
           categories={DEMO_CATEGORIES.filter((_, i) => i < 10)}
+          categoryCardType="card4"
         />
-        <div className="relative py-16">
-          <BackgroundSection />
-          <SectionMagazine5 heading="🧩 Editor Picks" posts={MAGAZINE1_POSTS} />
-        </div>
-
-        {/* <SectionSliderPosts
-          className="py-16 lg:py-28"
-          postCardName="card10"
-          heading="Sea travel enthusiast"
-          subHeading="Over 218 articles about sea travel"
-          posts={POSTS.filter((_, i) => i < 8)}
-        />
-
-        <SectionAds />
-
-        <SectionMagazine8
-          className="py-16 lg:py-28"
-          posts={DEMO_POSTS_AUDIO.filter((_, i) => i < 6)}
-        />
-
-        <div className="relative py-16">
-          <BackgroundSection />
-          <SectionMagazine9
-            posts={DEMO_POSTS_AUDIO.filter((_, i) => i >= 6 && i < 18)}
-          />
-        </div>
-
-        <SectionVideos className="py-16 lg:py-28" />
 
         <div className="relative py-16">
           <BackgroundSection />
@@ -84,15 +51,6 @@ const LandingPage: React.FC = () => {
         </div>
 
         <SectionBecomeAnAuthor className="py-16 lg:py-28" />
-
-        <SectionLatestPosts
-          posts={DEMO_POSTS.filter((_, i) => i > 7 && i < 16)}
-          postCardName="card7"
-          gridClass="sm:grid-cols-2"
-          className="pb-16 lg:pb-28"
-        />
-
-        <SectionSubscribe2 className="pb-16 lg:pb-28" /> */}
       </div>
     </div>
   );

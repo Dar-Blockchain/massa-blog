@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "Urbane";
+  src: url("./assets/fonts/Urbane/Urbane-Medium.ttf");
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/fonts/Poppins/Poppins-Regular.ttf");
+}
+
+@layer mas-custom-styles {
+  .default-input {
+    @apply border-secondary border border-solid outline-0
+            hover:border-gray-400
+            focus:border-brand focus:text-neutral
+            bg-secondary
+            placeholder-gray-400 text-gray-400
+            rounded-lg;
+  }
+
+  /* We rely on placeholder to change the border */
+  /* once uncontrolled components not necessary have value property */
+  .default-input:not(:placeholder-shown),
+  .default-input:not([value=""]):not([data-type="text-area"]) {
+    @apply border-brand text-neutral;
+  }
+
+  .default-button {
+    @apply rounded-lg mas-buttons w-full h-12 border border-c-default;
+  }
+
+  .default-primary {
+    @apply bg-c-default text-f-primary
+            hover:bg-c-hover hover:border-c-hover
+            active:bg-c-pressed
+            disabled:text-f-disabled-2 disabled:bg-c-disabled-1 disabled:border-c-disabled-1;
+  }
+
+  .default-danger {
+    @apply text-s-error border-s-error
+        hover:bg-s-error/[.15]
+        active:bg-s-error/[.3]
+        disabled:text-f-disabled-1 disabled:bg-c-disabled-2 disabled:border-c-disabled-1;
+  }
+
+  .default-toggle {
+    @apply w-12 h-10 text-f-primary
+        bg-c-default
+        hover:bg-c-pressed hover:border hover:border-c-pressed
+        disabled:text-gray-400 disabled:bg-slate-400 disabled:border-secondary disabled:hover:border-c-hover;
+  }
+
+  .default-icon {
+    @apply w-10 h-10 text-f-primary
+        hover:bg-gray-400;
+  }
+
+  .default-secondary {
+    @apply text-f-primary
+            hover:bg-gray-400/[.15]
+            active:bg-gray-400/[.3]
+            disabled:text-f-disabled-1 disabled:bg-c-disabled-2 disabled:border-c-disabled-1;
+  }
+
+  .default-tab {
+    @apply mas-menu-default antialiased flex flex-row justify-center items-center w-full border-b h-14 text-info;
+  }
+
+  .default-tab-hover {
+    @apply hover:cursor-pointer hover:text-c-hover hover:border-b-2;
+  }
+
+  .default-tab-active {
+    @apply mas-menu-active antialiased hover:border-brand border-brand border-b-2;
+  }
+}

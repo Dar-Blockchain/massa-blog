@@ -1,6 +1,5 @@
-import { NavItemType } from "@/components/Navigation/NavigationItem";
-import { Route } from "@/routers/types";
 import _ from "lodash";
+import { NavItemType } from "../components/Navigation/NavigationItem";
 
 const randomId = _.uniqueId;
 
@@ -24,43 +23,43 @@ export const MEGAMENU_TEMPLATES: NavItemType[] = [
   // single pages ---------
   {
     id: randomId(),
-    href: "/single/demo-slug" as Route,
+    href: "/single/demo-slug",
     name: "Single Pages",
     children: [
       {
         id: randomId(),
-        href: "/single/demo-slug" as Route,
+        href: "/single/demo-slug",
         name: "Single page 1",
       },
       {
         id: randomId(),
-        href: "/single-2/demo-slug" as Route,
+        href: "/single-2/demo-slug",
         name: "Single page 2",
       },
       {
         id: randomId(),
-        href: "/single-3/demo-slug" as Route,
+        href: "/single-3/demo-slug",
         name: "Single page 3",
       },
       {
         id: randomId(),
-        href: "/single-4/demo-slug" as Route,
+        href: "/single-4/demo-slug",
         name: "Single page 4",
       },
 
       {
         id: randomId(),
-        href: "/single-audio/demo-slug" as Route,
+        href: "/single-audio/demo-slug",
         name: "Single Audio",
       },
       {
         id: randomId(),
-        href: "/single-video/demo-slug" as Route,
+        href: "/single-video/demo-slug",
         name: "Single Video",
       },
       {
         id: randomId(),
-        href: "/single-gallery/demo-slug" as Route,
+        href: "/single-gallery/demo-slug",
         name: "Single Gallery",
         isNew: true,
       },
@@ -75,17 +74,17 @@ export const MEGAMENU_TEMPLATES: NavItemType[] = [
     children: [
       {
         id: randomId(),
-        href: "/archive/demo-slug" as Route,
+        href: "/archive/demo-slug",
         name: "Category page",
       },
       {
         id: randomId(),
-        href: "/archive-2/demo-slug" as Route,
+        href: "/archive-2/demo-slug",
         name: "Category audio",
       },
       {
         id: randomId(),
-        href: "/archive-3/demo-slug" as Route,
+        href: "/archive-3/demo-slug",
         name: "Category videos",
       },
       {
@@ -100,7 +99,7 @@ export const MEGAMENU_TEMPLATES: NavItemType[] = [
       },
       {
         id: randomId(),
-        href: "/author/demo-slug" as Route,
+        href: "/author/demo-slug",
         name: "Author page",
       },
     ],
@@ -143,23 +142,23 @@ const OTHER_PAGE_CHILD: NavItemType[] = [
   // archive pages ----------------
   {
     id: randomId(),
-    href: "/archive/demo-slug" as Route,
+    href: "/archive/demo-slug",
     name: "Category pages",
     type: "dropdown",
     children: [
       {
         id: randomId(),
-        href: "/archive/demo-slug" as Route,
+        href: "/archive/demo-slug",
         name: "Category page 1",
       },
       {
         id: randomId(),
-        href: "/archive-2/demo-slug" as Route,
+        href: "/archive-2/demo-slug",
         name: "Category page 2",
       },
       {
         id: randomId(),
-        href: "/archive-3/demo-slug" as Route,
+        href: "/archive-3/demo-slug",
         name: "Category page 3",
       },
     ],
@@ -168,48 +167,48 @@ const OTHER_PAGE_CHILD: NavItemType[] = [
   // single pages ----------------
   {
     id: randomId(),
-    href: "/single/demo-slug" as Route,
+    href: "/single/demo-slug",
     name: "Single pages",
     type: "dropdown",
     children: [
       {
         id: randomId(),
-        href: "/single/demo-slug" as Route,
+        href: "/single/demo-slug",
         name: "Single 1",
       },
       {
         id: randomId(),
-        href: "/single-2/demo-slug" as Route,
+        href: "/single-2/demo-slug",
         name: "Single 2",
       },
       {
         id: randomId(),
-        href: "/single-3/demo-slug" as Route,
+        href: "/single-3/demo-slug",
         name: "Single 3",
       },
       {
         id: randomId(),
-        href: "/single-4/demo-slug" as Route,
+        href: "/single-4/demo-slug",
         name: "Single 4",
       },
       {
         id: randomId(),
-        href: "/single-5/demo-slug" as Route,
+        href: "/single-5/demo-slug",
         name: "Single 5",
       },
       {
         id: randomId(),
-        href: "/single-audio/demo-slug" as Route,
+        href: "/single-audio/demo-slug",
         name: "Single Audio",
       },
       {
         id: randomId(),
-        href: "/single-video/demo-slug" as Route,
+        href: "/single-video/demo-slug",
         name: "Single Video",
       },
       {
         id: randomId(),
-        href: "/single-gallery/demo-slug" as Route,
+        href: "/single-gallery/demo-slug",
         name: "Single Gallery",
       },
     ],
@@ -238,7 +237,7 @@ const OTHER_PAGE_CHILD: NavItemType[] = [
   // author pages ----------------
   {
     id: randomId(),
-    href: "/author/demo-slug" as Route,
+    href: "/author/demo-slug",
     name: "Author page",
   },
 
@@ -322,91 +321,42 @@ export const NAVIGATION_DEMO_2: NavItemType[] = [
   {
     id: randomId(),
     href: "/",
-    name: "Homes",
+    name: "Home",
+  },
+  {
+    id: randomId(),
+    href: "/blog",
+    name: "Blog",
     type: "dropdown",
     children: [
-      { id: randomId(), href: "/", name: "Home page 1" },
-      { id: randomId(), href: "/home-2", name: "Home page 2" },
-      { id: randomId(), href: "/home-3", name: "Home page 3" },
-      { id: randomId(), href: "/home-4", name: "Home page 4" },
-      { id: randomId(), href: "/home-6", name: "Home page 5" },
-      { id: randomId(), href: "/", name: "Header style 1", isNew: true },
-      { id: randomId(), href: "/home-2", name: "Header style 2", isNew: true },
-      { id: randomId(), href: "/home-3", name: "Header style 3" },
+      { id: randomId(), href: "/category/technology", name: "Technology" },
+      {
+        id: randomId(),
+        href: "/category/decentralization",
+        name: "Decentralization",
+      },
+      { id: randomId(), href: "/category/community", name: "Community" },
     ],
   },
-
-  // single pages ----------------
   {
     id: randomId(),
-    href: "/single/demo-slug" as Route,
-    name: "Singles",
-    type: "dropdown",
-    children: [
-      {
-        id: randomId(),
-        href: "/single/demo-slug" as Route,
-        name: "Single page 1",
-      },
-      {
-        id: randomId(),
-        href: "/single-2/demo-slug" as Route,
-        name: "Single page 2",
-      },
-      {
-        id: randomId(),
-        href: "/single-3/demo-slug" as Route,
-        name: "Single page 3",
-      },
-      {
-        id: randomId(),
-        href: "/single-4/demo-slug" as Route,
-        name: "Single page 4",
-      },
-
-      {
-        id: randomId(),
-        href: "/single-audio/demo-slug" as Route,
-        name: "Single Audio",
-      },
-      {
-        id: randomId(),
-        href: "/single-video/demo-slug" as Route,
-        name: "Single Video",
-      },
-      {
-        id: randomId(),
-        href: "/single-gallery/demo-slug" as Route,
-        name: "Single Gallery",
-        isNew: true,
-      },
-    ],
-  },
-
-  //
-  {
-    id: randomId(),
-    href: "/archive/demo-slug" as Route,
-    name: "Beauty",
+    href: "/about",
+    name: "About",
   },
 
   {
     id: randomId(),
-    href: "/archive/demo-slug" as Route,
-    name: "Sport",
+    href: "/community",
+    name: "Community",
   },
   {
     id: randomId(),
-    href: "/search",
-    name: "Templates",
-    type: "megaMenu",
-    children: MEGAMENU_TEMPLATES,
+    href: "/wallet",
+    name: "Wallet",
   },
   {
     id: randomId(),
-    href: "/search",
-    name: "Explore",
-    type: "dropdown",
-    children: OTHER_PAGE_CHILD,
+    href: "/help",
+    name: "Help",
   },
 ];
