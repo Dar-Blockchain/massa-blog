@@ -1,3 +1,7 @@
+import { SetStateAction, useState } from "react";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import ButtonPrimary from "../components/Button/ButtonPrimary";
 import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
@@ -5,6 +9,20 @@ import Select from "../components/Select/Select";
 import Textarea from "../components/Textarea/Textarea";
 
 const DashboardSubmitPost = () => {
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+
+  const handleEditorChange = (editorState: SetStateAction<EditorState>) => {
+    setEditorState(editorState);
+  };
+
+  // If you need to save the content, you can convert it to raw JSON
+  const saveContent = () => {
+    const content = convertToRaw(editorState.getCurrentContent());
+
+    console.log(content);
+  };
   return (
     <div className="rounded-xl md:border md:border-neutral-100 dark:border-neutral-800 md:p-6">
       <form className="grid md:grid-cols-2 gap-6" action="#" method="post">
@@ -80,7 +98,55 @@ const DashboardSubmitPost = () => {
         <label className="block md:col-span-2">
           <Label> Post Content</Label>
 
-          <Textarea className="mt-1" rows={16} />
+          <div className="mt-1 border border-neutral-200 dark:border-neutral-700 rounded-md">
+            <Editor
+              editorState={editorState}
+              onEditorStateChange={handleEditorChange}
+              toolbarClassName="border-b border-neutral-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800"
+              wrapperClassName="rounded-t-md"
+              editorClassName="px-4 py-3 min-h-[300px] dark:bg-neutral-900 dark:text-neutral-100"
+              toolbar={{
+                options: [
+                  "inline",
+                  "blockType",
+                  "fontSize",
+                  "list",
+                  "textAlign",
+                  "link",
+                  "embedded",
+                  "image",
+                  "history",
+                ],
+                inline: {
+                  options: ["bold", "italic", "underline", "strikethrough"],
+                },
+
+                fontSize: {
+                  options: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48],
+                  // options: ["Small", "Normal", "Large", "Huge"],
+                },
+                list: { options: ["unordered", "ordered"] },
+                link: { options: ["link", "unlink"] },
+                // image: {
+                //   uploadCallback: (file:any) =>
+                //     new Promise((resolve, reject) => {
+                //       // Implement your image upload logic here
+                //       // const formData = new FormData();
+                //       // formData.append('image', file);
+                //       // axios.post('/upload', formData).then(({ data }) => resolve({ data: { link: data.url } }));
+                //       setTimeout(
+                //         () =>
+                //           resolve({
+                //             data: { link: URL.createObjectURL(file) },
+                //           }),
+                //         1000
+                //       );
+                //     }),
+                //   alt: { present: true, mandatory: false },
+                // },
+              }}
+            />
+          </div>
         </label>
 
         <ButtonPrimary className="md:col-span-2" type="submit">

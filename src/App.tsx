@@ -18,7 +18,7 @@ function App() {
             <Route index element={<DashboardMain />} />
             <Route path="posts" element={<DashboardPosts />} />
             <Route path="edit-profile" element={<DashboardEditProfile />} />
-            <Route path="submit-post" element={<DashboardLayout />} />
+            <Route path="submit-post" element={<DashboardMain />} />
           </Route>
         </Routes>
       </RootLayout>
