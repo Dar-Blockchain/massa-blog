@@ -1,5 +1,3 @@
-"use client";
-
 import { FC, Fragment, ReactNode, useState } from "react";
 import { Combobox, Dialog, Transition } from "@headlessui/react";
 import {

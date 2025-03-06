@@ -1,13 +1,11 @@
-"use client";
-
-import { Popover, Transition } from "@/app/headlessui";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { Fragment } from "react";
-import { MEGAMENU_TEMPLATES } from "@/data/navigation";
-import { NavItemType } from "@/components/Navigation/NavigationItem";
-import Link from "next/link";
+
 import NcImage from "../NcImage/NcImage";
-import { Route } from "@/routers/types";
+import { Link } from "react-router-dom";
+import { NavItemType } from "../Navigation/NavigationItem";
+import { Popover, Transition } from "../../headlessui";
+import { MEGAMENU_TEMPLATES } from "../../data/navigation";
 
 const recentPosts = [
   {
@@ -42,7 +40,7 @@ export default function TemplatesDropdown() {
       <li key={item.id} className={`${item.isNew ? "menuIsNew" : ""}`}>
         <Link
           className="font-normal text-slate-600 hover:text-black dark:text-slate-400 dark:hover:text-white"
-          href={{
+          to={{
             pathname: item.href || undefined,
           }}
         >
@@ -105,7 +103,6 @@ export default function TemplatesDropdown() {
                               <div className="relative flex-none">
                                 <NcImage
                                   containerClassName="aspect-[2/1] w-full rounded-lg bg-gray-100 sm:aspect-[16/9] sm:h-32 lg:h-auto z-0"
-                                  fill
                                   className="rounded-lg object-cover"
                                   src={post.imageUrl}
                                   sizes="300px"
@@ -122,14 +119,14 @@ export default function TemplatesDropdown() {
                                     {post.date}
                                   </time>
                                   <a
-                                    href={post.category.href as Route}
+                                    href={post.category.href}
                                     className="relative z-10 rounded-full bg-gray-50 py-1.5 px-3 text-xs font-medium text-gray-600 hover:bg-gray-100"
                                   >
                                     {post.category.title}
                                   </a>
                                 </div>
                                 <h4 className="mt-2 text-sm font-semibold leading-6 text-gray-900">
-                                  <Link href={post.href as Route}>
+                                  <Link to={post.href}>
                                     <span className="absolute inset-0" />
                                     {post.title}
                                   </Link>

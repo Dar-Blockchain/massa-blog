@@ -8,6 +8,7 @@ import DashboardMain from "./pages/DashboardMain";
 import DashboardEditProfile from "./pages/DashboardEditProfile";
 import DashboardPosts from "./pages/DashboardPosts";
 import CategoryPage from "./pages/CategoryPage";
+import PostPage from "./pages/PostPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/categories/:categoryId" element={<CategoryPage />} />
+          <Route path="/posts/:postId" element={<PostPage />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardMain />} />
             <Route path="posts" element={<DashboardPosts />} />

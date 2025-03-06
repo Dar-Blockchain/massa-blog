@@ -1,12 +1,10 @@
-"use client";
-
-import React, { FC } from "react";
-import Logo from "@/components/Logo/Logo";
-import MenuBar from "@/components/MenuBar/MenuBar";
+import { FC } from "react";
 import AvatarDropdown from "./AvatarDropdown";
-import Navigation from "@/components/Navigation/Navigation";
 import SearchModal from "./SearchModal";
 import NotifyDropdown from "./NotifyDropdown";
+import MenuBar from "../MenuBar/MenuBar";
+import Logo from "../Logo/Logo";
+import Navigation from "../Navigation/Navigation";
 
 export interface MainNav2LoggedProps {}
 

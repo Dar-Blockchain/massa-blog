@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, Fragment, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { useLocation } from "react-router-dom";
