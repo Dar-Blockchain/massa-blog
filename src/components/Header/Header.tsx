@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import MainNav2 from "./MainNav2";
 
 export interface HeaderProps {}

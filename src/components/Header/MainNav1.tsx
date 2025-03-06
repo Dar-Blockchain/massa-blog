@@ -18,7 +18,7 @@ const MainNav1: FC<MainNav1Props> = ({}) => {
   const [selectedAccount, setSelectedAccount] = useState(
     connectedAccount?.address || ""
   );
-  const [showModal, setShowModal] = React.useState(true);
+  const [showModal, setShowModal] = React.useState(false);
   const closeModal = () => setShowModal(false);
 
   useEffect(() => {

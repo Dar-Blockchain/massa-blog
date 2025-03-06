@@ -1,8 +1,5 @@
-"use client";
+import { FC } from "react";
 
-import React, { FC } from "react";
-import Logo from "@/components/Logo/Logo";
-import MenuBar from "@/components/MenuBar/MenuBar";
 import LangDropdown from "./LangDropdown";
 import AvatarDropdown from "./AvatarDropdown";
 import TemplatesDropdown from "./TemplatesDropdown";
@@ -10,6 +7,8 @@ import NotifyDropdown from "./NotifyDropdown";
 import SwitchDarkMode from "../SwitchDarkMode/SwitchDarkMode";
 import Input from "../Input/Input";
 import SearchModal from "./SearchModal";
+import MenuBar from "../MenuBar/MenuBar";
+import Logo from "../Logo/Logo";
 
 export interface MainNav2Props {
   className?: string;
