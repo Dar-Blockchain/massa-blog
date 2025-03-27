@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ButtonPrimary from "../components/Button/ButtonPrimary";
 import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
 import { SOCIALS_DATA } from "../components/SocialsShare/SocialsShare";
+import { useAccountStore } from "@massalabs/react-ui-kit";
+import { checkUserProfile, createProfile } from "../redux/slices/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { Profile } from "../struct/Profile";
 
 const PROFILE_SOCIALS = [
   ...SOCIALS_DATA,
@@ -15,6 +19,9 @@ const PROFILE_SOCIALS = [
 ];
 
 const DashboardEditProfile = () => {
+  const { connectedAccount } = useAccountStore();
+  const userProfile = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
@@ -29,6 +36,30 @@ const DashboardEditProfile = () => {
     website: "",
   });
 
+  useEffect(() => {
+    if (connectedAccount) {
+      dispatch(checkUserProfile(connectedAccount));
+    }
+  }, [connectedAccount, dispatch]);
+
+  useEffect(() => {
+    if (userProfile) {
+      setFirstName(userProfile.firstName || "");
+      setLastName(userProfile.lastName || "");
+      setBio(userProfile.bio || "");
+      setProfilePicUrl(userProfile.profilePicUrl || "");
+      setCoverPhotoUrl(userProfile.coverPhotoUrl || "");
+      setEmail(userProfile.email || "");
+      setSocialUrls({
+        facebook: userProfile.facebook || "",
+        twitter: userProfile.twitter || "",
+        linkedin: userProfile.linkedin || "",
+        instagram: userProfile.instagram || "",
+        website: userProfile.website || "",
+      });
+    }
+  }, [userProfile]);
+
   const handleSocialUrlChange = (socialId: string, value: string) => {
     setSocialUrls((prev) => ({
       ...prev,
@@ -36,9 +67,39 @@ const DashboardEditProfile = () => {
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!connectedAccount) {
+      console.error("No connected account");
+      return;
+    }
+
+    const profileData = new Profile(
+      firstName,
+      lastName,
+      profilePicUrl,
+      bio,
+      coverPhotoUrl,
+      email,
+      socialUrls.facebook,
+      socialUrls.twitter,
+      socialUrls.linkedin,
+      socialUrls.instagram,
+      socialUrls.website
+    );
+
+    try {
+      await dispatch(createProfile({ connectedAccount, profileData })).unwrap();
+      // Refresh profile data after successful creation
+      dispatch(checkUserProfile(connectedAccount));
+    } catch (error) {
+      console.error("Failed to create profile:", error);
+    }
+  };
+
   return (
     <div className="rounded-xl md:border md:border-neutral-100 dark:border-neutral-800 md:p-6">
-      <form className="grid md:grid-cols-2 gap-6" action="#" method="post">
+      <form className="grid md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
         {/* Name Fields */}
         <label className="block">
           <Label>First name</Label>

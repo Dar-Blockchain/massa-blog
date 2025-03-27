@@ -15,6 +15,7 @@
     "@massalabs/massa-web3": "^5.0.1-dev.20241212140726",
     "@massalabs/react-ui-kit": "^1.0.1",
     "@massalabs/wallet-provider": "^3.0.1-dev.20241220142101",
+    "@reduxjs/toolkit": "^2.6.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
@@ -26,11 +27,13 @@
     "react-dom": "^18.3.1",
     "react-draft-wysiwyg": "^1.15.0",
     "react-hooks-global-state": "^2.1.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.2.0",
     "react-swipeable": "^7.0.2",
     "react-toastify": "^11.0.5",
     "react-use": "^17.4.0",
-    "react-use-keypress": "^1.3.1"
+    "react-use-keypress": "^1.3.1",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
