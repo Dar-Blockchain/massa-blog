@@ -4,7 +4,11 @@ import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
 import { SOCIALS_DATA } from "../components/SocialsShare/SocialsShare";
 import { useAccountStore } from "@massalabs/react-ui-kit";
-import { checkUserProfile, createProfile } from "../redux/slices/userSlice";
+import {
+  checkUserProfile,
+  createProfile,
+  updateProfile,
+} from "../redux/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { Profile } from "../struct/Profile";
 
@@ -41,6 +45,10 @@ const DashboardEditProfile = () => {
       dispatch(checkUserProfile(connectedAccount));
     }
   }, [connectedAccount, dispatch]);
+
+  const hasExistingProfile = () => {
+    return !!userProfile && !!userProfile.firstName;
+  };
 
   useEffect(() => {
     if (userProfile) {
@@ -88,12 +96,39 @@ const DashboardEditProfile = () => {
       socialUrls.website
     );
 
+    const profileDataToUpdate = new Profile(
+      userProfile?.profileContract || "",
+      connectedAccount.address,
+      firstName,
+      lastName,
+      profilePicUrl,
+      bio,
+      coverPhotoUrl,
+      email,
+      socialUrls.facebook,
+      socialUrls.twitter,
+      socialUrls.linkedin,
+      socialUrls.instagram,
+      socialUrls.website
+    );
+
     try {
-      await dispatch(createProfile({ connectedAccount, profileData })).unwrap();
-      // Refresh profile data after successful creation
+      if (hasExistingProfile()) {
+        await dispatch(
+          updateProfile({ connectedAccount, profileDataToUpdate })
+        ).unwrap();
+      } else {
+        await dispatch(
+          createProfile({ connectedAccount, profileData })
+        ).unwrap();
+      }
+      // Refresh profile data after successful operation
       dispatch(checkUserProfile(connectedAccount));
     } catch (error) {
-      console.error("Failed to create profile:", error);
+      console.error(
+        `Failed to ${hasExistingProfile() ? "update" : "create"} profile:`,
+        error
+      );
     }
   };
 
@@ -217,7 +252,7 @@ const DashboardEditProfile = () => {
         </label>
 
         <ButtonPrimary className="md:col-span-2" type="submit">
-          Update profile
+          {hasExistingProfile() ? "Update profile" : "Create profile"}
         </ButtonPrimary>
       </form>
     </div>

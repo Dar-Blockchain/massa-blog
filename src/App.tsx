@@ -9,6 +9,7 @@ import DashboardEditProfile from "./pages/DashboardEditProfile";
 import DashboardPosts from "./pages/DashboardPosts";
 import CategoryPage from "./pages/CategoryPage";
 import PostPage from "./pages/PostPage";
+import RequireProfile from "./components/RequireProfile";
 
 function App() {
   return (
@@ -19,10 +20,31 @@ function App() {
           <Route path="/categories/:categoryId" element={<CategoryPage />} />
           <Route path="/posts/:postId" element={<PostPage />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DashboardMain />} />
-            <Route path="posts" element={<DashboardPosts />} />
+            <Route
+              index
+              element={
+                <RequireProfile>
+                  <DashboardMain />
+                </RequireProfile>
+              }
+            />
+            <Route
+              path="posts"
+              element={
+                <RequireProfile>
+                  <DashboardPosts />
+                </RequireProfile>
+              }
+            />
             <Route path="edit-profile" element={<DashboardEditProfile />} />
-            <Route path="submit-post" element={<DashboardMain />} />
+            <Route
+              path="submit-post"
+              element={
+                <RequireProfile>
+                  <DashboardMain />
+                </RequireProfile>
+              }
+            />
           </Route>
         </Routes>
       </RootLayout>

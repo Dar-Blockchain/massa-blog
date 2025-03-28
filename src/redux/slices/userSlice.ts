@@ -11,6 +11,7 @@ import {
   bytesToStr,
 } from "@massalabs/massa-web3";
 import { Profile } from "../../struct/Profile";
+import { toast } from "react-toastify";
 
 interface UserState {
   mode: "light" | "dark";
@@ -42,13 +43,18 @@ export const checkUserProfile = createAsyncThunk<
       console.error("Smart contract error:", result.info.error);
       return null;
     }
-    // if (result.value.length === 0) {
-    //   return null; // No profile exists
-    // }
+    if (!result.value || result.value.length === 0) {
+      return null;
+    }
+
     console.log("result value for get user profile", result.value);
     const argsForDeserialization = new Args(result.value);
     const profile = argsForDeserialization.nextSerializable<Profile>(Profile);
     console.log("profile", profile);
+
+    if (!profile || !profile.firstName) {
+      return null;
+    }
 
     return profile;
   } catch (error) {
@@ -71,8 +77,8 @@ export const createProfile = createAsyncThunk<
     // const args = new Args()
     //   .addString(profileData.firstName)
     //   .addString(profileData.lastName)
-    //   .addString(profileData.bio)
     //   .addString(profileData.profilePicUrl)
+    //   .addString(profileData.bio)
     //   .addString(profileData.coverPhotoUrl)
     //   .addString(profileData.email)
     //   .addString(profileData.facebook)
@@ -88,9 +94,11 @@ export const createProfile = createAsyncThunk<
     const speculativeEvents = await operation.getSpeculativeEvents();
     if (operationStatus === OperationStatus.SpeculativeSuccess) {
       console.log("Speculative success:", speculativeEvents);
+      toast.success("Profile created successfully!");
       // return profileData;
     } else {
       console.error("Operation failed:", speculativeEvents);
+      toast.error("Failed to create profile");
       throw new Error("Operation failed");
     }
 
@@ -98,6 +106,54 @@ export const createProfile = createAsyncThunk<
   } catch (error) {
     console.error("Error creating profile:", error);
     throw new Error("Error creating profile");
+  }
+});
+
+// Add new action for updating profile
+export const updateProfile = createAsyncThunk<
+  any,
+  { connectedAccount: any; profileDataToUpdate: any }
+>("user/updateProfile", async ({ connectedAccount, profileDataToUpdate }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+  try {
+    const contractAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, contractAddress);
+    const args = new Args()
+      .addString(connectedAccount.address) // userAddress
+      .addString(connectedAccount.address) // newUserAddress
+      .addString(profileDataToUpdate.firstName) // newFirstName
+      .addString(profileDataToUpdate.lastName) // newLastName
+      .addString(profileDataToUpdate.profilePicUrl) // newProfilePicUrl
+      .addString(profileDataToUpdate.bio) // newBio
+      .addString(profileDataToUpdate.coverPhotoUrl) // newCoverPhotoUrl
+      .addString(profileDataToUpdate.email) // newEmail
+      .addString(profileDataToUpdate.facebook) // newFacebook
+      .addString(profileDataToUpdate.twitter) // newTwitter
+      .addString(profileDataToUpdate.linkedin) // newLinkedin
+      .addString(profileDataToUpdate.instagram) // newInstagram
+      .addString(profileDataToUpdate.website) // newWebsite
+      .serialize();
+
+    const operation = await contract.call("updateProfile", args, {
+      coins: Mas.fromString("10"),
+    });
+    const operationStatus = await operation.waitSpeculativeExecution();
+    const speculativeEvents = await operation.getSpeculativeEvents();
+
+    if (operationStatus === OperationStatus.SpeculativeSuccess) {
+      console.log("Update success:", speculativeEvents);
+      toast.success("Profile updated successfully!");
+      return profileDataToUpdate;
+    } else {
+      toast.error("Failed to update profile");
+      throw new Error("Update operation failed");
+    }
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    toast.error("Failed to update profile");
+    throw new Error("Error updating profile");
   }
 });
 

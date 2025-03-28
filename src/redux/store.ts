@@ -8,7 +8,8 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user"],
+  // whitelist: ["user"],
+  whitelist: [],
 };
 
 export const rootReducer = combineReducers({

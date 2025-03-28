@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef } from "react";
 import { useAccountStore } from "@massalabs/react-ui-kit/src/lib/ConnectMassaWallets";
 import { useLocalStorage } from "@massalabs/react-ui-kit/src/lib/util/hooks/useLocalStorage";
 import { getWallets } from "@massalabs/wallet-provider";
+import { checkUserProfile } from "../redux/slices/userSlice";
+import { useAppDispatch } from "../redux/store";
 
 type SavedAccount = {
   address: string;
@@ -15,6 +17,7 @@ const EMPTY_ACCOUNT: SavedAccount = {
 
 const useAccountSync = () => {
   const { connectedAccount, setCurrentWallet } = useAccountStore();
+  const dispatch = useAppDispatch();
   const [savedAccount, setSavedAccount] = useLocalStorage<SavedAccount>(
     "saved-account",
     EMPTY_ACCOUNT
@@ -36,6 +39,18 @@ const useAccountSync = () => {
       setCurrentWallet(stored.wallet);
     }
   }, [savedAccount.address, getStoredAccount, setCurrentWallet]);
+
+  useEffect(() => {
+    if (connectedAccount) {
+      // Update saved account
+      const { address, providerName } = connectedAccount;
+      setSavedAccount({ address, providerName });
+
+      // Fetch user profile
+      dispatch(checkUserProfile(connectedAccount));
+    }
+  }, [connectedAccount, setSavedAccount, dispatch]);
+
   useEffect(() => {
     const shouldUpdateSavedAccount =
       connectedAccount && connectedAccount.address !== savedAccount.address;
