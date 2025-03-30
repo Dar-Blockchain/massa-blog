@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination/Pagination";
+import { Post } from "../struct/Post";
+import { toast, useAccountStore } from "@massalabs/react-ui-kit";
+import { PostService } from "../services/postService";
 
 const people = [
   {
@@ -54,6 +58,40 @@ const people = [
 ];
 
 const DashboardPosts = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { connectedAccount } = useAccountStore();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchPosts = async (page: number) => {
+    setIsLoading(true);
+    try {
+      const fetchedPosts = await PostService.getPosts(connectedAccount, page);
+      setPosts(fetchedPosts);
+      // Test getPost function with ID 1
+      const singlePost = await PostService.getPost(connectedAccount, 1n);
+      console.log("Single Post with ID 1:", singlePost);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      toast.error("Failed to load posts");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (connectedAccount) {
+      fetchPosts(currentPage);
+    }
+  }, [connectedAccount, currentPage]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col space-y-8">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -78,53 +116,58 @@ const DashboardPosts = () => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-neutral-900 divide-y divide-neutral-200 dark:divide-neutral-800">
-                {people.map((item) => (
-                  <tr key={item.id}>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center w-96 lg:w-auto max-w-md overflow-hidden">
-                        <img
-                          className="flex-shrink-0 h-12 w-12 rounded-lg relative z-0 overflow-hidden lg:h-14 lg:w-14"
-                          src={item.image}
-                          alt="post"
-                        />
-                        <div className="ms-4 flex-grow">
-                          <h2 className="inline-flex line-clamp-2 text-sm font-semibold  dark:text-neutral-300">
-                            {item.title}
-                          </h2>
+                {posts.length > 0 ? (
+                  posts.map((post) => (
+                    <tr key={post.title}>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center w-96 lg:w-auto max-w-md overflow-hidden">
+                          <img
+                            className="flex-shrink-0 h-12 w-12 rounded-lg relative z-0 overflow-hidden lg:h-14 lg:w-14"
+                            src={
+                              post.featuredImage || "/default-post-image.jpg"
+                            }
+                            alt={post.title}
+                          />
+                          <div className="ms-4 flex-grow">
+                            <h2 className="inline-flex line-clamp-2 text-sm font-semibold dark:text-neutral-300">
+                              {post.title}
+                            </h2>
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1">
+                              {post.excerpt}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {item.liveStatus ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-teal-100 text-teal-900 lg:text-sm">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="px-2 inline-flex text-sm text-neutral-500 dark:text-neutral-400 rounded-full">
-                          Offline
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
-                      <span> {item.payment}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-neutral-300">
-                      <a
-                        href="/#"
-                        className="text-primary-800 dark:text-primary-500 hover:text-primary-900"
-                      >
-                        Edit
-                      </a>
-                      {` | `}
-                      <a
-                        href="/#"
-                        className="text-rose-600 hover:text-rose-900"
-                      >
-                        Delete
-                      </a>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
+                        {/* {new Date(post.date).toLocaleDateString()} */}
+                        date
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
+                        {/* {post.viewCount} */}
+                        view count
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            /* Add edit functionality */
+                          }}
+                          className="text-primary-600 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-400"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-6 py-4 text-center text-neutral-500 dark:text-neutral-400"
+                    >
+                      No posts found. Start creating your first post!
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

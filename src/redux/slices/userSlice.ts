@@ -1,14 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import {
   Args,
   SmartContract,
-  DeserializedResult,
-  Serializable,
   OperationStatus,
   Mas,
-  parseMas,
-  bytesToStr,
 } from "@massalabs/massa-web3";
 import { Profile } from "../../struct/Profile";
 import { toast } from "react-toastify";
@@ -70,10 +65,17 @@ export const createProfile = createAsyncThunk<
   if (!connectedAccount) {
     throw new Error("Missing wallet or connected account.");
   }
+  const toastId = toast.loading("Creating your profile...");
   try {
     const contractAddress = import.meta.env.VITE_FACTORY_ADDRESS;
     const contract = new SmartContract(connectedAccount, contractAddress);
+    toast.update(toastId, {
+      render: "Preparing profile data...",
+    });
     const args = new Args().addSerializable(profileData).serialize();
+    toast.update(toastId, {
+      render: "Sending transaction...",
+    });
     // const args = new Args()
     //   .addString(profileData.firstName)
     //   .addString(profileData.lastName)
@@ -90,21 +92,40 @@ export const createProfile = createAsyncThunk<
     const operation = await contract.call("createProfile", args, {
       coins: Mas.fromString("10"),
     });
+    toast.update(toastId, {
+      render: "Waiting for confirmation...",
+    });
     const operationStatus = await operation.waitSpeculativeExecution();
     const speculativeEvents = await operation.getSpeculativeEvents();
     if (operationStatus === OperationStatus.SpeculativeSuccess) {
       console.log("Speculative success:", speculativeEvents);
-      toast.success("Profile created successfully!");
+      toast.update(toastId, {
+        render: "Profile created successfully! 🎉",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
       // return profileData;
     } else {
       console.error("Operation failed:", speculativeEvents);
-      toast.error("Failed to create profile");
+      toast.update(toastId, {
+        render: "Failed to create profile",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
       throw new Error("Operation failed");
     }
 
     return profileData;
   } catch (error) {
     console.error("Error creating profile:", error);
+    toast.update(toastId, {
+      render: "Failed to create profile",
+      type: "error",
+      isLoading: false,
+      autoClose: 5000,
+    });
     throw new Error("Error creating profile");
   }
 });

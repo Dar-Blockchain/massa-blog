@@ -7,94 +7,163 @@ import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
 import Select from "../components/Select/Select";
 import Textarea from "../components/Textarea/Textarea";
+import { DEMO_CATEGORIES } from "../data/taxonomies";
+import { useAccountStore } from "@massalabs/react-ui-kit";
+import { PostService } from "../services/postService";
+import { Post } from "../struct/Post";
 
 const DashboardSubmitPost = () => {
+  const { connectedAccount } = useAccountStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [title, setTitle] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [readingTime, setReadingTime] = useState(5);
+  const [tags, setTags] = useState("");
 
   const handleEditorChange = (editorState: SetStateAction<EditorState>) => {
     setEditorState(editorState);
   };
 
   // If you need to save the content, you can convert it to raw JSON
-  const saveContent = () => {
-    const content = convertToRaw(editorState.getCurrentContent());
+  // const saveContent = () => {
+  //   const content = convertToRaw(editorState.getCurrentContent());
 
-    console.log(content);
+  //   console.log(content);
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!connectedAccount) {
+      console.error("No connected account");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const content = JSON.stringify(
+        convertToRaw(editorState.getCurrentContent())
+      );
+
+      const postData = {
+        title,
+        excerpt,
+        content,
+        featuredImage,
+        categoryId,
+        readingTime,
+        tags,
+      };
+      await PostService.createPost(connectedAccount, postData);
+
+      // Reset form
+      setEditorState(EditorState.createEmpty());
+      setTitle("");
+      setExcerpt("");
+      setCategoryId("");
+      setFeaturedImage("");
+      setReadingTime(5);
+      setTags("");
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className="rounded-xl md:border md:border-neutral-100 dark:border-neutral-800 md:p-6">
-      <form className="grid md:grid-cols-2 gap-6" action="#" method="post">
+      <form className="grid md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+        {/* Title */}
         <label className="block md:col-span-2">
           <Label>Post Title *</Label>
-
-          <Input type="text" className="mt-1" />
+          <Input
+            type="text"
+            className="mt-1"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
         </label>
+
+        {/* Excerpt */}
         <label className="block md:col-span-2">
           <Label>Post Excerpt</Label>
-
-          <Textarea className="mt-1" rows={4} />
+          <Textarea
+            className="mt-1"
+            rows={4}
+            value={excerpt}
+            onChange={(e) => setExcerpt(e.target.value)}
+          />
           <p className="mt-1 text-sm text-neutral-500">
             Brief description for your article. URLs are hyperlinked.
           </p>
         </label>
+        {/* Category */}
         <label className="block">
-          <Label>Category</Label>
-
-          <Select className="mt-1">
-            <option value="-1">– select –</option>
-            <option value="ha'apai">Category 1</option>
-            <option value="tongatapu">Category 2</option>
-            <option value="vava'u">Category 3</option>
+          <Label>Category *</Label>
+          <Select
+            className="mt-1"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            required
+          >
+            <option value="">– select –</option>
+            {DEMO_CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
           </Select>
         </label>
+        {/* Tags */}
         <label className="block">
           <Label>Tags</Label>
-
-          <Input type="text" className="mt-1" />
+          <Input
+            type="text"
+            className="mt-1"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="Separate tags with commas"
+          />
         </label>
 
-        <div className="block md:col-span-2">
-          <Label>Featured Image</Label>
-
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-700 border-dashed rounded-md">
-            <div className="space-y-1 text-center">
-              <svg
-                className="mx-auto h-12 w-12 text-neutral-400"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>
-              <div className="flex flex-col sm:flex-row text-sm text-neutral-6000">
-                <label
-                  htmlFor="file-upload"
-                  className="relative cursor-pointer rounded-md font-medium text-primary-6000 hover:text-primary-800 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                >
-                  <span>Upload a file</span>
-                  <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    className="sr-only"
-                  />
-                </label>
-                <p className="ps-1">or drag and drop</p>
-              </div>
-              <p className="text-xs text-neutral-500">
-                PNG, JPG, GIF up to 2MB
-              </p>
+        {/* Featured Image */}
+        <label className="block md:col-span-2">
+          <Label>Featured Image URL *</Label>
+          <Input
+            type="url"
+            value={featuredImage}
+            onChange={(e) => setFeaturedImage(e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="mt-1"
+            required
+          />
+          {featuredImage && (
+            <div className="mt-4">
+              <Label>Preview</Label>
+              <img
+                src={featuredImage}
+                alt="Featured Preview"
+                className="mt-1 h-32 w-full rounded-lg object-cover"
+              />
             </div>
-          </div>
-        </div>
+          )}
+        </label>
+
+        {/* Reading Time */}
+        <label className="block">
+          <Label>Reading Time (minutes)</Label>
+          <Input
+            type="number"
+            min="1"
+            value={readingTime}
+            onChange={(e) => setReadingTime(Number(e.target.value))}
+            className="mt-1"
+          />
+        </label>
         <label className="block md:col-span-2">
           <Label> Post Content</Label>
 
