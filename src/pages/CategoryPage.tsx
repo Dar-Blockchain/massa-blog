@@ -8,11 +8,23 @@ import Card11 from "../components/Card11/Card11";
 import Pagination from "../components/Pagination/Pagination";
 import ButtonPrimary from "../components/Button/ButtonPrimary";
 import { DEMO_AUTHORS } from "../data/authors";
+import { useParams } from "react-router-dom";
+import { toast, useAccountStore } from "@massalabs/react-ui-kit";
+import { useEffect, useState } from "react";
+import { Post } from "../struct/Post";
+import { Category } from "../struct/Category";
+import { CategoryService } from "../services/categoryService";
 
 // Tag and category have same data type - we will use one demo data
 const posts: PostDataType[] = DEMO_POSTS.filter((_, i) => i < 16);
 
-const PageArchive = ({}) => {
+const CategoryPage = ({}) => {
+  const { categoryId } = useParams();
+  const { connectedAccount } = useAccountStore();
+  // const [posts, setPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  // const [isLoading, setIsLoading] = useState(true);
   const FILTERS = [
     { name: "Most Recent" },
     { name: "Curated by Admin" },
@@ -20,6 +32,58 @@ const PageArchive = ({}) => {
     { name: "Most Discussed" },
     { name: "Most Viewed" },
   ];
+
+  const fetchCategories = async () => {
+    try {
+      const fetchedCategories = await CategoryService.getCategories(
+        connectedAccount
+      );
+      setCategories(fetchedCategories);
+      console.log("fetchedCategories", fetchedCategories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to load categories");
+    }
+  };
+
+  // const fetchPosts = async () => {
+  //   if (!categoryId) return;
+
+  //   setIsLoading(true);
+  //   try {
+  //     const fetchedPosts = await CategoryService.getPostsByCategory(
+  //       connectedAccount,
+  //       categoryId,
+  //       currentPage
+  //     );
+  //     // setPosts(fetchedPosts);
+  //   } catch (error) {
+  //     console.error("Error fetching posts:", error);
+  //     toast.error("Failed to load posts");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (connectedAccount) {
+      fetchCategories();
+    }
+  }, [connectedAccount]);
+
+  // useEffect(() => {
+  //   if (connectedAccount && categoryId) {
+  //     fetchPosts();
+  //   }
+  // }, [connectedAccount, categoryId, currentPage]);
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-64">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={`nc-PageArchive`}>
@@ -81,4 +145,4 @@ const PageArchive = ({}) => {
   );
 };
 
-export default PageArchive;
+export default CategoryPage;

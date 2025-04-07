@@ -104,14 +104,13 @@ const DashboardPosts = () => {
                     Article
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Status
+                    Created At
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Payment
+                    Category
                   </th>
-
-                  <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
+                  <th scope="col" className="px-6 py-3">
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -139,14 +138,12 @@ const DashboardPosts = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
-                        {/* {new Date(post.date).toLocaleDateString()} */}
-                        date
+                        {new Date(Number(post.createdAt)).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
-                        {/* {post.viewCount} */}
-                        view count
+                        {post.categoryId}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium gap-2 flex">
                         <button
                           onClick={() => {
                             /* Add edit functionality */
@@ -154,6 +151,14 @@ const DashboardPosts = () => {
                           className="text-primary-600 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-400"
                         >
                           Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            /* Add delete functionality */
+                          }}
+                          className="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400"
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>
