@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Massa Boilerplate: React + TypeScript + Vite
 
 Welcome to the frontend Massa Boilerplate! This project serves as a starting point for building decentralized applications with Massa.
@@ -35,3 +36,6 @@ We welcome contributions!
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 Happy coding!
+=======
+# massa-blog
+>>>>>>> d6ba79eda6657a3db394f317bd0d03ee3dbf74a3
