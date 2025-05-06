@@ -10,8 +10,12 @@ import DashboardPosts from "./pages/DashboardPosts";
 import CategoryPage from "./pages/CategoryPage";
 import PostPage from "./pages/PostPage";
 import RequireProfile from "./components/RequireProfile";
+import useAccountSync from "./hooks/useAccountSync";
+import AuthorProfile from "./pages/AuthorProfile";
 
 function App() {
+  useAccountSync();
+
   return (
     <>
       <RootLayout>
@@ -19,6 +23,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/categories/:categoryId" element={<CategoryPage />} />
           <Route path="/posts/:postId" element={<PostPage />} />
+          <Route path="/AuthorProfile" element={<AuthorProfile />}/>
+
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route
               index

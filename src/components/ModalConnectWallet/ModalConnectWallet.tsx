@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 import NcModal from "../NcModal/NcModal";
 import { ConnectMassaWallet, useAccountStore } from "@massalabs/react-ui-kit";
+import useAccountSync from "../../hooks/useAccountSync";
 
 export interface ProblemPlan {
   name: string;
@@ -18,6 +19,7 @@ const ModalConnectWallet: FC<ModalReportItemProps> = ({
   onCloseModalConnectWallet,
 }) => {
   const { connectedAccount } = useAccountStore();
+  useAccountSync(); // This will handle the wallet persistence
 
   const renderContent = () => {
     return (

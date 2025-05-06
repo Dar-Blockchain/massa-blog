@@ -12,12 +12,17 @@ interface UserState {
   mode: "light" | "dark";
   user: Profile | null;
   userContractAddress: string | undefined;
+  walletConnection: {
+    address: string;
+    providerName: string;
+  } | null;
 }
 
 const initialState: UserState = {
   mode: "light",
   user: null,
   userContractAddress: undefined,
+  walletConnection: null,
 };
 
 export const checkUserProfile = createAsyncThunk<
@@ -194,6 +199,12 @@ const userSlice = createSlice({
     ) => {
       state.userContractAddress = action.payload;
     },
+    setWalletConnection: (
+      state,
+      action: PayloadAction<{ address: string; providerName: string } | null>
+    ) => {
+      state.walletConnection = action.payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -203,6 +214,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setMode, setUser, setUserContractAddress } = userSlice.actions;
+export const { setMode, setUser, setUserContractAddress, setWalletConnection } = userSlice.actions;
 
 export default userSlice.reducer;

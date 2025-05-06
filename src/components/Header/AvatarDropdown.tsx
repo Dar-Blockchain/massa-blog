@@ -10,13 +10,7 @@ export default function AvatarDropdown() {
   const { setCurrentWallet, setConnectedAccount } = useAccountStore();
   const { setSavedAccount } = useAccountSync();
   const userProfile = useAppSelector((state) => state.user.user);
-  interface MenuItem {
-    label: string;
-    icon: JSX.Element;
-    href: string;
-    onClick: () => void;
-    description?: string;
-  }
+
   const disconnectWallet = async () => {
     try {
       setConnectedAccount(undefined);
@@ -27,6 +21,14 @@ export default function AvatarDropdown() {
       console.error("Error disconnecting wallet:", error);
     }
   };
+
+  interface MenuItem {
+    label: string;
+    icon: JSX.Element;
+    href: string;
+    onClick: () => void;
+    description?: string;
+  }
 
   const getMenuItems = (close: () => void): MenuItem[] => {
     if (!userProfile?.firstName) {
