@@ -1,10 +1,12 @@
 "use client";
-import React, { useState } from "react";
-// Remove next/image import if you are not using Next.js
-// import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { AuthorService } from "../services/authorService";
+import { Profile } from "../struct/Profile";
+import { useAccountStore } from "@massalabs/react-ui-kit";
+import { toast } from "react-toastify";
 
-// Import other dependencies/components as usual
-import { PostDataType } from "../data/types";
+import { PostAuthorType, PostDataType } from "../data/types";
 import { DEMO_POSTS } from "../data/posts";
 import NcImage from "../components/NcImage/NcImage";
 import { GlobeAltIcon, ShareIcon } from "@heroicons/react/24/solid";
@@ -29,8 +31,6 @@ import Pagination from "../components/Pagination/Pagination";
 import ButtonPrimary from "../components/Button/ButtonPrimary";
 import { avatarImgs } from "../contains/fakeData";
 
-// Assuming you have an array of avatar image URLs defined/ exported somewhere:
-
 const posts: PostDataType[] = DEMO_POSTS.filter((_, i) => i < 12);
 const FILTERS = [
   { name: "Most Recent" },
@@ -43,11 +43,63 @@ const TABS = ["Articles", "Favorites", "Saved"];
 
 const PageAuthor = () => {
   const [tabActive, setTabActive] = useState<string>(TABS[0]);
+  const { authorId } = useParams();
+  const { connectedAccount } = useAccountStore();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!authorId || !connectedAccount) return;
+      try {
+        const data = await AuthorService.getAuthorProfile(authorId, connectedAccount);
+        setProfile(data);
+        console.log("profile", data);
+      } catch (err) {
+        toast.error("Failed to load profile.");
+        console.error(err);
+      }
+    };
+
+    fetchProfile();
+  }, [authorId, connectedAccount]);
 
   const handleClickTab = (item: string) => {
     if (item === tabActive) return;
     setTabActive(item);
   };
+  const [authors, setAuthors] = useState<PostAuthorType[]>([]);
+
+  const fetchAuthors = async () => {
+    try {
+      const profiles: Profile[] = await AuthorService.getAuthors(connectedAccount);
+
+      const mapped: PostAuthorType[] = profiles.map((profile) => ({
+        id: profile.address,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        desc: profile.bio || "",
+        displayName: `${profile.firstName} ${profile.lastName}`,
+        avatar: profile.profilePicUrl || "https://via.placeholder.com/150",
+        jobName: profile.firstName.toLowerCase(),
+        href: `/author/${profile.address}`,
+        count: 0,
+        bgImage: profile.coverPhotoUrl?.trim() !== ""
+          ? profile.coverPhotoUrl
+          : "https://plus.unsplash.com/premium_photo-1673177667569-e3321a8d8256?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y292ZXIlMjBwaG90b3xlbnwwfHwwfHx8MA%3D%3D",
+      }));
+
+      setAuthors(mapped);
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+      toast.error("Failed to load authors");
+    }
+  };
+
+  useEffect(() => {
+    if (connectedAccount) {
+      fetchAuthors();
+    }
+  }, [connectedAccount]);
 
   return (
     <div className="nc-PageAuthor">
@@ -66,10 +118,13 @@ const PageAuthor = () => {
           <div className="relative bg-white dark:bg-neutral-900 dark:border dark:border-neutral-700 p-5 lg:p-8 rounded-3xl md:rounded-[40px] shadow-xl flex flex-col md:flex-row">
             <div className="w-32 lg:w-40 flex-shrink-0 mt-12 sm:mt-0">
               <div className="wil-avatar relative flex-shrink-0 inline-flex items-center justify-center overflow-hidden text-neutral-100 uppercase font-semibold rounded-full w-20 h-20 text-xl lg:text-2xl lg:w-36 lg:h-36 ring-4 ring-white dark:ring-0 shadow-2xl z-0">
-                {/* Replace Next.js <Image> with a plain HTML <img> element */}
                 <img
                   alt="Avatar"
-                  src={avatarImgs[3]} 
+                  src={
+                    profile?.profilePicUrl?.trim()
+                      ? profile.profilePicUrl
+                      : avatarImgs[3]
+                  }
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -79,22 +134,27 @@ const PageAuthor = () => {
             <div className="pt-5 md:pt-1 lg:ml-6 xl:ml-12 flex-grow">
               <div className="max-w-screen-sm space-y-3.5">
                 <h2 className="inline-flex items-center text-2xl sm:text-3xl lg:text-4xl font-semibold">
-                  <span>Dony Herrera</span>
+                  <span>
+                    {profile
+                      ? `${profile.firstName} ${profile.lastName}`
+                      : "Author name"}
+                  </span>
                   <VerifyIcon
                     className="ml-2"
                     iconClass="w-6 h-6 sm:w-7 sm:h-7 xl:w-8 xl:h-8"
                   />
                 </h2>
                 <span className="block text-sm text-neutral-500 dark:text-neutral-400">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Porro autem totam iure quibusdam asperiores numquam quae animi assumenda necessitatibus consectetur.
+                  {profile?.bio ||
+                    "This author has not added a biography yet."}
                 </span>
                 <a
-                  href="#"
+                  href={profile?.website || "#"}
                   className="flex items-center text-xs font-medium space-x-2.5 rtl:space-x-reverse cursor-pointer text-neutral-500 dark:text-neutral-400 truncate"
                 >
                   <GlobeAltIcon className="flex-shrink-0 w-4 h-4" />
                   <span className="text-neutral-700 dark:text-neutral-300 truncate">
-                    https://example.com/me
+                    {profile?.website || "https://example.com/me"}
                   </span>
                 </a>
                 <SocialsList itemClass="block w-7 h-7" />
@@ -111,7 +171,7 @@ const PageAuthor = () => {
                 <NcDropDown
                   className="flex-shrink-0 flex items-center justify-center focus:outline-none h-10 w-10 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-full"
                   renderTrigger={() => <ShareIcon className="h-5 w-5" />}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   data={SOCIALS_DATA}
                 />
               </div>
@@ -158,7 +218,7 @@ const PageAuthor = () => {
         </main>
 
         {/* SECTION: Categories grid */}
-        <div className="relative py-16">
+        {/* <div className="relative py-16">
           <BackgroundSection />
           <SectionGridCategoryBox
             categories={DEMO_CATEGORIES.filter((_, i) => i < 10)}
@@ -166,13 +226,13 @@ const PageAuthor = () => {
           <div className="text-center mx-auto mt-10 md:mt-16">
             <ButtonSecondary>Show me more</ButtonSecondary>
           </div>
-        </div>
+        </div> */}
 
         {/* SECTION: Slider for authors */}
         <SectionSliderNewAuthors
           heading="Top elite authors"
           subHeading="Discover our elite writers"
-          authors={DEMO_AUTHORS.filter((_, i) => i < 10)}
+          authors={authors}
         />
 
         {/* SUBSCRIBE SECTION */}

@@ -23,8 +23,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/categories/:categoryId" element={<CategoryPage />} />
           <Route path="/posts/:postId" element={<PostPage />} />
-          <Route path="/AuthorProfile" element={<AuthorProfile />}/>
-
+          <Route path="/author/:authorId" element={<AuthorProfile />}/>
+          
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route
               index
