@@ -11,7 +11,8 @@ export class Post implements Serializable<Post> {
     public categoryId: string = "",
     public readingTime: bigint = 0n,
     public tags: string = "",
-    public createdAt: bigint = 0n
+    public createdAt: bigint = 0n,
+    public address: string = ""
   ) {}
 
   serialize(): Uint8Array {
