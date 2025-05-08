@@ -22,9 +22,10 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/categories/:categoryId" element={<CategoryPage />} />
-          <Route path="/posts/:postId" element={<PostPage />} />
+          {/* <Route path="/posts/:postId" element={<PostPage />} /> */}
           <Route path="/author/:authorId" element={<AuthorProfile />}/>
-          
+          <Route path="/author/:authorId/post/:postId" element={<PostPage />}/>
+
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route
               index

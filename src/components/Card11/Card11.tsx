@@ -12,6 +12,7 @@ export interface Card11Props {
   post: PostDataType;
   ratio?: string;
   hiddenAuthor?: boolean;
+  authorAddress?: string;
 }
 
 const Card11: FC<Card11Props> = ({
@@ -19,6 +20,7 @@ const Card11: FC<Card11Props> = ({
   post,
   hiddenAuthor = false,
   ratio = "aspect-w-4 aspect-h-3",
+  authorAddress,
 }) => {
   const { title, href, categories, date } = post;
 
@@ -38,7 +40,7 @@ const Card11: FC<Card11Props> = ({
           <PostFeaturedMedia post={post} isHover={isHover} />
         </div>
       </div>
-      <Link to={href} className="absolute inset-0"></Link>
+      <Link to={`/author/${authorAddress}/post/1`} className="absolute inset-0"></Link>
       <span className="absolute top-3 inset-x-3 z-10">
         <CategoryBadgeList categories={categories} />
       </span>

@@ -8,12 +8,17 @@ import NcImage from "../components/NcImage/NcImage";
 import SingleContent from "../components/SingleContent";
 import SingleHeader from "../components/SingleHeader";
 import SingleRelatedPosts from "../components/SingleRelatedPosts";
+import { Profile } from "../struct/Profile";
+import { AuthorService } from "../services/authorService";
 
 const PageSinglePost = () => {
   const { postId } = useParams();
   const { connectedAccount } = useAccountStore();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const { authorId } = useParams();
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -25,6 +30,7 @@ const PageSinglePost = () => {
           toast.error("Post not found");
         } else {
           setPost(postData);
+          console.log("post", postData);
         }
       } catch (error) {
         console.error("Error loading post:", error);
@@ -36,7 +42,26 @@ const PageSinglePost = () => {
 
     fetchPost();
   }, [postId, connectedAccount]);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!authorId || !connectedAccount) return;
+      try {
+        const data = await AuthorService.getAuthorProfile(authorId, connectedAccount);
+        setProfile(data);
+        console.log("profileData", profile);
+      } catch (err) {
+        toast.error("Failed to load profile.");
+        console.error(err);
+      }
+    };
 
+    fetchProfile();
+  }, [post?.author, connectedAccount]);
+  useEffect(() => {
+    if (profile) {
+      console.log("✅ Profile updated in state:", profile);
+    }
+  }, [profile]);
   if (loading) {
     return <div className="container text-center py-16">Loading post...</div>;
   }
@@ -79,7 +104,7 @@ const PageSinglePost = () => {
       </div>
 
       <div className="container mt-10">
-        <SingleContent content={post.content} featuredImage={post.featuredImage}/>
+        <SingleContent content={post.content} featuredImage={post.featuredImage} profile={profile} />
       </div>
 
       <SingleRelatedPosts />

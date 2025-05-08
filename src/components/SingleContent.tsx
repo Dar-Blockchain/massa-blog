@@ -6,13 +6,15 @@ import SingleCommentForm from "./SingleCommentForm";
 import SingleCommentLists from "./SingleCommentLists";
 import PostCardLikeAction from "./PostCardLikeAction/PostCardLikeAction";
 import PostCardCommentBtn from "./PostCardCommentBtn/PostCardCommentBtn";
+import { Profile } from "../struct/Profile";
 
 export interface SingleContentProps {
   content: string;
   featuredImage: string;
+  profile: Profile;
 }
 
-const SingleContent: FC<SingleContentProps> = ({ content, featuredImage }) => {
+const SingleContent: FC<SingleContentProps> = ({ content, featuredImage ,profile }) => {
   const endedAnchorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLButtonElement>(null);
@@ -77,7 +79,7 @@ const SingleContent: FC<SingleContentProps> = ({ content, featuredImage }) => {
         {/* AUTHOR */}
         <div className="max-w-screen-md mx-auto border-b border-t border-neutral-100 dark:border-neutral-700 py-2 my-10"></div>
         <div className="max-w-screen-md mx-auto">
-          <SingleAuthor />
+          <SingleAuthor profile={profile} />
         </div>
 
         {/* COMMENT FORM */}
