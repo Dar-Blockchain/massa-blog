@@ -31,7 +31,7 @@ import Pagination from "../components/Pagination/Pagination";
 import ButtonPrimary from "../components/Button/ButtonPrimary";
 import { avatarImgs } from "../contains/fakeData";
 
-const posts: PostDataType[] = DEMO_POSTS.filter((_, i) => i < 12);
+// const posts: PostDataType[] = DEMO_POSTS.filter((_, i) => i < 12);
 const FILTERS = [
   { name: "Most Recent" },
   { name: "Curated by Admin" },
@@ -100,6 +100,51 @@ const PageAuthor = () => {
       fetchAuthors();
     }
   }, [connectedAccount]);
+  const [posts, setPosts] = useState<PostDataType[]>([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (!authorId || !connectedAccount) return;
+      try {
+        console.log("authorId", authorId);
+        const fetchedPosts = await AuthorService.getPostsByAuthor(authorId, connectedAccount);
+
+        const formattedPosts: PostDataType[] = fetchedPosts.map((post) => ({
+          id: post.id?.toString?.() || "",
+          author: post.author,
+          title: post.title,
+          excerpt: post.excerpt,
+          content: post.content,
+          featuredImage: post.featuredImage || `https://source.unsplash.com/random/800x600?sig=${post.id}`,
+          categoryId: post.categoryId,
+          tags: post.tags,
+          readingTime: Number(post.readingTime?.toString?.() || 0),
+          createdAt: new Date(Number(post.createdAt?.toString?.() || 0)).toISOString(),
+          href: `/post/${post.id?.toString?.() || ""}`,
+          like: {
+            count: 0,
+            isLiked: false,
+          },
+          bookmark: {
+            count: 0,
+            isBookmarked: false,
+          },
+          commentCount: 0,
+          viewdCount: 0,
+          postType: "standard",
+        }));
+
+        setPosts(formattedPosts);
+        console.log("formattedPosts", formattedPosts);
+      } catch (err) {
+        toast.error("Failed to load posts.");
+        console.error(err);
+      }
+    };
+
+    fetchPosts();
+    console.log("posts2", posts);
+  }, [authorId, connectedAccount]);
 
   return (
     <div className="nc-PageAuthor">
@@ -205,8 +250,8 @@ const PageAuthor = () => {
 
           {/* LOOP ITEMS */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8 lg:mt-10">
-            {posts.map((post) => (
-              <Card11 key={post.id} post={post} authorAddress={profile?.address}/>
+            {posts && posts.map((post) => (
+              <Card11 key={post.id} post={post} profile={profile as Profile} />
             ))}
           </div>
 

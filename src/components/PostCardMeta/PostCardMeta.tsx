@@ -1,14 +1,15 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 import { Link } from "react-router-dom";
 import { PostDataType } from "../../data/types";
 import Avatar from "../Avatar/Avatar";
+import { Profile } from "../../struct/Profile";
 
 export interface PostCardMetaProps {
   className?: string;
-  meta: Pick<PostDataType, "date" | "author">;
   hiddenAvatar?: boolean;
   avatarSize?: string;
+  meta: Profile;
 }
 
 const PostCardMeta: FC<PostCardMetaProps> = ({
@@ -17,26 +18,29 @@ const PostCardMeta: FC<PostCardMetaProps> = ({
   hiddenAvatar = false,
   avatarSize = "h-7 w-7 text-sm",
 }) => {
-  const { date, author } = meta;
-
+  useEffect(() => {
+    console.log("dataMeta", meta);
+  }, [meta]);
   return (
+    <>
+    {meta &&
     <div
       className={`nc-PostCardMeta inline-flex items-center flex-wrap text-neutral-800 dark:text-neutral-200 ${className}`}
     >
       <Link
-        to={author.href}
+        to={meta.address}
         className="relative flex items-center space-x-2 rtl:space-x-reverse"
       >
         {!hiddenAvatar && (
           <Avatar
             radius="rounded-full"
             sizeClass={avatarSize}
-            imgUrl={author.avatar}
-            userName={author.displayName}
+            imgUrl={meta.profilePicUrl}
+            userName={meta.firstName}
           />
         )}
         <span className="block text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white font-medium">
-          {author.displayName}
+          {meta.firstName} {meta.lastName}
         </span>
       </Link>
       <>
@@ -44,10 +48,12 @@ const PostCardMeta: FC<PostCardMetaProps> = ({
           ·
         </span>
         <span className="text-neutral-500 dark:text-neutral-400 font-normal">
-          {date}
+          {meta.bio}
         </span>
       </>
     </div>
+    }
+    </> 
   );
 };
 

@@ -13,7 +13,7 @@ export class Post implements Serializable<Post> {
     public tags: string = "",
     public createdAt: bigint = 0n,
     public address: string = ""
-  ) {}
+  ) { }
 
   serialize(): Uint8Array {
     const args = new Args()

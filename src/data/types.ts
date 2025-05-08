@@ -35,29 +35,16 @@ export interface PostAuthorType {
 }
 
 export interface PostDataType {
-  id: string | number;
-  author: PostAuthorType;
-  date: string;
-  href: Route;
-  categories: TaxonomyType[];
+  id: string; // converted from bigint
+  author: string; // address from the smart contract
   title: string;
-  featuredImage: string | StaticImageData;
-  desc?: string;
-  like: {
-    count: number;
-    isLiked: boolean;
-  };
-  bookmark: {
-    count: number;
-    isBookmarked: boolean;
-  };
-  commentCount: number;
-  viewdCount: number;
-  readingTime: number;
-  postType: "standard" | "video" | "gallery" | "audio";
-  videoUrl?: string;
-  audioUrl?: string | string[];
-  galleryImgs?: string[];
+  excerpt: string;
+  content: string;
+  featuredImage: string;
+  categoryId: string;
+  tags: string;
+  readingTime: number; // converted from bigint
+  createdAt: string; // ISO string from bigint
 }
 
 export type TwMainColor =

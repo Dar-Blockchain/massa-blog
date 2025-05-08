@@ -25,12 +25,12 @@ const PageSinglePost = () => {
       if (!postId || !connectedAccount) return;
 
       try {
-        const postData = await PostService.getPost(connectedAccount, BigInt(postId));
+        const postData = await AuthorService.getPostById(postId, authorId as string, connectedAccount);
         if (!postData) {
           toast.error("Post not found");
         } else {
           setPost(postData);
-          console.log("post", postData);
+          console.log("postssss", postData);
         }
       } catch (error) {
         console.error("Error loading post:", error);
