@@ -30,12 +30,7 @@ const CardAuthorBox2: FC<CardAuthorBox2Props> = ({
             sizes="(max-width: 600px) 480px, 33vw"
           />
         </div>
-        <div className="absolute top-3 inset-x-3 flex">
-          <div className=" py-1 px-4 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center leading-none text-xs font-medium">
-            {count}{" "}
-            <ArrowRightIcon className="w-5 h-5 text-yellow-600 ms-3 rtl:rotate-180" />
-          </div>
-        </div>
+    
       </div>
 
       <div className="-mt-8 m-8 text-center">

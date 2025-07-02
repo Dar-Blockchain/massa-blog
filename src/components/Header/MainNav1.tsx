@@ -44,7 +44,6 @@ const MainNav1: FC<MainNav1Props> = ({}) => {
           <div className="flex-1 flex items-center justify-end text-neutral-700 dark:text-neutral-100 space-x-1 rtl:space-x-reverse">
             <div className="hidden items-center lg:flex">
               <SwitchDarkMode />
-              <SearchModal />
               {connectedAccount && <AvatarDropdown />}
               <div className="px-1"></div>
               <Button
@@ -59,7 +58,6 @@ const MainNav1: FC<MainNav1Props> = ({}) => {
             </div>
             <div className="flex items-center lg:hidden">
               <SwitchDarkMode />
-              <SearchModal />
             </div>
           </div>
         </div>

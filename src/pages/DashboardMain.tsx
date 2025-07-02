@@ -107,12 +107,12 @@ const DashboardSubmitPost = () => {
           <Select
             className="mt-1"
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={(e) => {setCategoryId(e.target.value),console.log('categoryId,,,,,,,,,,,,,,,,,', e.target.value)}}
             required
           >
             <option value="">– select –</option>
             {DEMO_CATEGORIES.map((category) => (
-              <option key={category.id} value={category.id}>
+              <option key={category.name} value={category.name}>
                 {category.name}
               </option>
             ))}

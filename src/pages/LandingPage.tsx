@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import rightImg from "../images/hero-right.png";
 import Vector1 from "../images/Vector1.png";
-import { DEMO_CATEGORIES } from "../data/taxonomies";
+import { TaxonomyType } from "../data/types";
 import SectionHero from "../components/SectionHero/SectionHero";
 import BackgroundSection from "../components/BackgroundSection/BackgroundSection";
 import SectionSliderNewCategories from "../components/SectionSliderNewCategories/SectionSliderNewCategories";
@@ -12,15 +12,18 @@ import { Profile } from "../struct/Profile";
 import { PostAuthorType } from "../data/types";
 import { toast } from "react-toastify";
 import { useAccountStore } from "@massalabs/react-ui-kit";
+import { CategoryService } from "../services/categoryService";
+import { DEMO_CATEGORIES } from "../data/taxonomies";
 
 const LandingPage: React.FC = () => {
   const { connectedAccount } = useAccountStore();
   const [authors, setAuthors] = useState<PostAuthorType[]>([]);
+  const [categories, setCategories] = useState<TaxonomyType[]>(DEMO_CATEGORIES);
 
   const fetchAuthors = async () => {
     try {
       const profiles: Profile[] = await AuthorService.getAuthors(connectedAccount);
-
+      console.log('profiles,,,,,,,,,,,,,,,,,', profiles);
       const mapped: PostAuthorType[] = profiles.map((profile) => ({
         id: profile.address,
         firstName: profile.firstName,
@@ -43,9 +46,31 @@ const LandingPage: React.FC = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const fetchedCategories = await CategoryService.getCategories(connectedAccount);
+      if (fetchedCategories && fetchedCategories.length > 0) {
+        const mappedCategories: TaxonomyType[] = fetchedCategories.map(cat => ({
+          id: cat.id.toString(),
+          name: cat.name,
+          href: `/categories/${cat.name.toLowerCase().replace(/\s+/g, '-')}`,
+          count: Number(cat.count),
+          thumbnail: cat.thumbnail || "https://via.placeholder.com/500",
+          taxonomy: "category"
+        }));
+        setCategories(mappedCategories);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      // Don't show error toast since we're falling back to demo categories
+      // toast.error("Failed to load categories");
+    }
+  };
+
   useEffect(() => {
     if (connectedAccount) {
       fetchAuthors();
+      fetchCategories();
     }
   }, [connectedAccount]);
 
@@ -76,7 +101,7 @@ const LandingPage: React.FC = () => {
           className="py-16 lg:py-28"
           heading="Most popular topics"
           subHeading="Dive into Various Themes"
-          categories={DEMO_CATEGORIES.filter((_, i) => i < 10)}
+          categories={categories}
           categoryCardType="card4"
         />
 

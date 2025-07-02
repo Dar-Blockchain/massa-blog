@@ -6,6 +6,7 @@ import {
   Mas,
 } from "@massalabs/massa-web3";
 import { Profile } from "../../struct/Profile";
+import { Comment } from "../../struct/Comment";
 import { toast } from "react-toastify";
 
 interface UserState {
@@ -180,6 +181,288 @@ export const updateProfile = createAsyncThunk<
     console.error("Error updating profile:", error);
     toast.error("Failed to update profile");
     throw new Error("Error updating profile");
+  }
+});
+
+// Add new action for adding comments
+export const addComment = createAsyncThunk<
+  boolean,
+  { 
+    connectedAccount: any; 
+    authorAddress: string; // Add author address parameter
+    postId: bigint; 
+    text: string; 
+    parentCommentId?: bigint;
+  }
+>("user/addComment", async ({ connectedAccount, authorAddress, postId, text, parentCommentId }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+  
+  if (!authorAddress) {
+    throw new Error("Author address is required.");
+  }
+  
+  const toastId = toast.loading("Adding comment...");
+  
+  try {
+    console.log('Adding comment to post:', postId, 'from author:', authorAddress);
+    
+    const factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, factoryAddress);
+    
+    toast.update(toastId, {
+      render: "Preparing comment data...",
+    });
+    
+    const args = new Args()
+      .addString(authorAddress)
+      .addU64(postId)
+      .addString(text);
+    
+    // Add parent comment ID if this is a reply
+    if (parentCommentId !== undefined) {
+      args.addU64(parentCommentId);
+    }
+    
+    toast.update(toastId, {
+      render: "Sending transaction...",
+    });
+    
+    console.log("args", args.serialize());
+    const operation = await contract.call("addPostComment", args.serialize(), {
+      coins: Mas.fromString("0.01"), // Small fee for commenting
+    });
+    
+    toast.update(toastId, {
+      render: "Waiting for confirmation...",
+    });
+    
+    const operationStatus = await operation.waitFinalExecution();
+    
+    if (operationStatus === OperationStatus.Success) {
+      console.log("Comment added successfully");
+      toast.update(toastId, {
+        render: "Comment added successfully! 🎉",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      return true;
+    } else {
+      console.error("Operation failed with status:", operationStatus);
+      toast.update(toastId, {
+        render: "Failed to add comment",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      throw new Error("Operation failed");
+    }
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    toast.update(toastId, {
+      render: error instanceof Error ? error.message : "Failed to add comment",
+      type: "error",
+      isLoading: false,
+      autoClose: 5000,
+    });
+    throw new Error("Error adding comment");
+  }
+});
+
+// Add new action for getting comment replies
+export const getCommentReplies = createAsyncThunk<
+  Comment[],
+  {
+    connectedAccount: any;
+    authorAddress: string;
+    selectionPart?: number;
+    commentId: bigint;
+  }
+>("user/getCommentReplies", async ({ connectedAccount, authorAddress, selectionPart = 1, commentId }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+
+  if (!authorAddress) {
+    throw new Error("Author address is required.");
+  }
+
+  try {
+    console.log('Getting comment replies for comment:', commentId, 'from author:', authorAddress);
+    
+    const factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, factoryAddress);
+    
+    const args = new Args()
+      .addString(authorAddress)
+      .addU64(BigInt(selectionPart))
+      .addU64(commentId);
+
+    const result = await contract.read('getCommentReplies', args.serialize());
+
+    if (result.value) {
+      const comments = new Args(result.value).nextSerializableObjectArray<Comment>(Comment);
+      return comments;
+    } else {
+      throw new Error('Failed to get comment replies');
+    }
+  } catch (error) {
+    console.error("Error getting comment replies:", error);
+    throw new Error("Error getting comment replies");
+  }
+});
+
+// Add new action for getting post comments
+export const getPostComments = createAsyncThunk<
+  Comment[],
+  {
+    connectedAccount: any;
+    authorAddress: string;
+    postId: bigint;
+    selectionPart?: number;
+  }
+>("user/getPostComments", async ({ connectedAccount, authorAddress, postId, selectionPart = 1 }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+
+  if (!authorAddress) {
+    throw new Error("Author address is required.");
+  }
+
+  try {
+    console.log('Getting comments for post:', postId, 'from author:', authorAddress);
+    
+    const factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, factoryAddress);
+    
+    const args = new Args()
+      .addString(authorAddress)
+      .addU64(postId)
+      .addU64(BigInt(selectionPart));
+
+    const result = await contract.read('getPostComments', args.serialize());
+
+    if (result.value) {
+      const comments = new Args(result.value).nextSerializableObjectArray<Comment>(Comment);
+      console.log('comments,,,,,,,,,,,,,,,,,', comments);
+      return comments;
+    } else {
+      throw new Error('Failed to get post comments');
+    }
+  } catch (error) {
+    console.error("Error getting post comments:", error);
+    throw new Error("Error getting post comments");
+  }
+});
+
+// Add new action for liking comments
+export const likeComment = createAsyncThunk<
+  boolean,
+  {
+    connectedAccount: any;
+    authorAddress: string;
+    commentId: bigint;
+  }
+>("user/likeComment", async ({ connectedAccount, authorAddress, commentId }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+
+  if (!authorAddress) {
+    throw new Error("Author address is required.");
+  }
+
+  const toastId = toast.loading("Liking comment...");
+
+  try {
+    console.log('Liking comment:', commentId, 'from author:', authorAddress);
+    
+    const factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, factoryAddress);
+    
+    const args = new Args()
+      .addString(authorAddress)
+      .addU64(commentId);
+
+    const operation = await contract.call('likeComment', args.serialize(), {
+      coins: Mas.fromString('0.01'),  // Small fee for liking
+    });
+
+    const operationStatus = await operation.waitFinalExecution();
+
+    if (operationStatus === OperationStatus.Success) {
+      console.log('Comment liked successfully');
+      toast.update(toastId, {
+        render: "Comment liked successfully! 🎉",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      return true;
+    } else {
+      console.error('Operation failed with status:', operationStatus);
+      toast.update(toastId, {
+        render: "Failed to like comment",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      throw new Error("Operation failed");
+    }
+  } catch (error) {
+    console.error("Error liking comment:", error);
+    toast.update(toastId, {
+      render: error instanceof Error ? error.message : "Failed to like comment",
+      type: "error",
+      isLoading: false,
+      autoClose: 5000,
+    });
+    throw new Error("Error liking comment");
+  }
+});
+
+// Add new action for getting comment likes
+export const getCommentLikes = createAsyncThunk<
+  bigint,
+  {
+    connectedAccount: any;
+    authorAddress: string;
+    commentId: bigint;
+  }
+>("user/getCommentLikes", async ({ connectedAccount, authorAddress, commentId }) => {
+  if (!connectedAccount) {
+    throw new Error("Missing wallet or connected account.");
+  }
+
+  if (!authorAddress) {
+    throw new Error("Author address is required.");
+  }
+
+  try {
+    console.log('Getting likes count for comment:', commentId, 'from author:', authorAddress);
+    
+    const factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS;
+    const contract = new SmartContract(connectedAccount, factoryAddress);
+    
+    const args = new Args()
+      .addString(authorAddress)
+      .addU64(commentId);
+
+    const result = await contract.read('getCommentLikes', args.serialize());
+
+    if (result.value) {
+      const likesCount = new Args(result.value).nextU64();
+      console.log('Comment has', likesCount.toString(), 'likes');
+      return likesCount;
+    } else {
+      throw new Error('Failed to get comment likes count');
+    }
+  } catch (error) {
+    console.error("Error getting comment likes:", error);
+    throw new Error("Error getting comment likes");
   }
 });
 

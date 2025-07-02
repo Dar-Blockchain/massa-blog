@@ -19,13 +19,13 @@ const PageSinglePost = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const { authorId } = useParams();
 
-
   useEffect(() => {
     const fetchPost = async () => {
       if (!postId || !connectedAccount) return;
 
       try {
         const postData = await AuthorService.getPostById(postId, authorId as string, connectedAccount);
+        console.log("postData.......", postData);
         if (!postData) {
           toast.error("Post not found");
         } else {
@@ -42,6 +42,7 @@ const PageSinglePost = () => {
 
     fetchPost();
   }, [postId, connectedAccount]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!authorId || !connectedAccount) return;
@@ -57,11 +58,13 @@ const PageSinglePost = () => {
 
     fetchProfile();
   }, [post?.author, connectedAccount]);
+
   useEffect(() => {
     if (profile) {
       console.log("✅ Profile updated in state:", profile);
     }
   }, [profile]);
+
   if (loading) {
     return <div className="container text-center py-16">Loading post...</div>;
   }
@@ -83,7 +86,7 @@ const PageSinglePost = () => {
                 {
                   id: post.categoryId || "default",
                   name: post.categoryId || "Uncategorized",
-                  href: "/category/" + (post.categoryId || "default"),
+                  href: "/categories/" + (post.categoryId || "default"),
                   taxonomy: "category",
                 },
               ]}
@@ -102,12 +105,16 @@ const PageSinglePost = () => {
           sizes="(max-width: 1024px) 100vw, 1280px"
         />
       </div>
-
       <div className="container mt-10">
-        <SingleContent content={post.content} featuredImage={post.featuredImage} profile={profile} />
+        <SingleContent content={post.content} commentNbr={Number(post.commentsNbr)} featuredImage={post.featuredImage} profile={profile} />
       </div>
 
-      <SingleRelatedPosts />
+      {post.categoryId && (
+        <SingleRelatedPosts 
+          categoryName={post.categoryId} 
+          currentPostId={post.id.toString()} 
+        />
+      )}
     </>
   );
 };

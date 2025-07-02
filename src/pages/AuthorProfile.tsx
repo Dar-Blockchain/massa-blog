@@ -15,7 +15,6 @@ import NcDropDown from "../components/NcDropDown/NcDropDown";
 import { SOCIALS_DATA } from "../components/SocialsShare/SocialsShare";
 import Nav from "../components/Nav/Nav";
 import NavItem from "../components/NavItem/NavItem";
-import ArchiveFilterListBox from "../components/ArchiveFilterListBox/ArchiveFilterListBox";
 import Card11 from "../components/Card11/Card11";
 import BackgroundSection from "../components/BackgroundSection/BackgroundSection";
 import { DEMO_CATEGORIES } from "../data/taxonomies";
@@ -32,13 +31,6 @@ import ButtonPrimary from "../components/Button/ButtonPrimary";
 import { avatarImgs } from "../contains/fakeData";
 
 // const posts: PostDataType[] = DEMO_POSTS.filter((_, i) => i < 12);
-const FILTERS = [
-  { name: "Most Recent" },
-  { name: "Curated by Admin" },
-  { name: "Most Appreciated" },
-  { name: "Most Discussed" },
-  { name: "Most Viewed" },
-];
 const TABS = ["Articles", "Favorites", "Saved"];
 
 const PageAuthor = () => {
@@ -206,22 +198,7 @@ const PageAuthor = () => {
               </div>
             </div>
 
-            <div className="absolute md:static start-5 end-5 top-4 sm:start-auto sm:top-5 sm:end-5 flex justify-end">
-              <FollowButton
-                isFollowing={false}
-                fontSize="text-sm md:text-base font-medium"
-                sizeClass="px-4 py-1 md:py-2.5 h-8 md:!h-10 sm:px-6 lg:px-8"
-              />
-              <div className="mx-2">
-                <NcDropDown
-                  className="flex-shrink-0 flex items-center justify-center focus:outline-none h-10 w-10 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-full"
-                  renderTrigger={() => <ShareIcon className="h-5 w-5" />}
-                  onClick={() => { }}
-                  data={SOCIALS_DATA}
-                />
-              </div>
-              <AccountActionDropdown containerClassName="h-10 w-10 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700" />
-            </div>
+          
           </div>
         </div>
       </div>
@@ -230,23 +207,7 @@ const PageAuthor = () => {
       <div className="container py-16 lg:pb-28 lg:pt-20 space-y-16 lg:space-y-28">
         <main>
           {/* TABS FILTER */}
-          <div className="flex flex-col sm:items-center sm:justify-between sm:flex-row">
-            <Nav className="sm:space-x-2 rtl:space-x-reverse">
-              {TABS.map((item, index) => (
-                <NavItem
-                  key={index}
-                  isActive={tabActive === item}
-                  onClick={() => handleClickTab(item)}
-                >
-                  {item}
-                </NavItem>
-              ))}
-            </Nav>
-            <div className="block my-4 border-b w-full border-neutral-300 dark:border-neutral-500 sm:hidden"></div>
-            <div className="flex justify-end">
-              <ArchiveFilterListBox lists={FILTERS} />
-            </div>
-          </div>
+        
 
           {/* LOOP ITEMS */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8 lg:mt-10">
@@ -257,7 +218,6 @@ const PageAuthor = () => {
 
           {/* PAGINATION */}
           <div className="flex flex-col mt-12 lg:mt-16 space-y-5 sm:space-y-0 sm:space-x-3 sm:flex-row sm:justify-between sm:items-center">
-            <Pagination />
             <ButtonPrimary>Show me more</ButtonPrimary>
           </div>
         </main>

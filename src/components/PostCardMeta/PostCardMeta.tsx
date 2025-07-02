@@ -28,7 +28,7 @@ const PostCardMeta: FC<PostCardMetaProps> = ({
       className={`nc-PostCardMeta inline-flex items-center flex-wrap text-neutral-800 dark:text-neutral-200 ${className}`}
     >
       <Link
-        to={meta.address}
+        to={`/author/${meta.address}`}
         className="relative flex items-center space-x-2 rtl:space-x-reverse"
       >
         {!hiddenAvatar && (
@@ -47,9 +47,7 @@ const PostCardMeta: FC<PostCardMetaProps> = ({
         <span className="text-neutral-500 dark:text-neutral-400 mx-[6px] font-medium">
           ·
         </span>
-        <span className="text-neutral-500 dark:text-neutral-400 font-normal">
-          {meta.bio}
-        </span>
+        
       </>
     </div>
     }

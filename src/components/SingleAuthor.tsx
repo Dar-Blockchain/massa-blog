@@ -9,8 +9,8 @@ export interface SingleAuthorProps {
   author?: PostAuthorType;
   profile?: Profile;
 }
-
 const SingleAuthor: FC<SingleAuthorProps> = ({ author = DEMO_AUTHORS[1], profile }) => {
+
   return (
     <div className="nc-SingleAuthor flex">
       <Link to={author.href}>

@@ -1,4 +1,8 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useAccountStore } from "@massalabs/react-ui-kit";
+import { useAppDispatch } from "../../redux/store";
+import { likeComment, getCommentLikes } from "../../redux/slices/userSlice";
 import convertNumbThousand from "../../utils/convertNumbThousand";
 import twFocusClass from "../../utils/twFocusClass";
 
@@ -7,15 +11,71 @@ export interface CommentCardLikeReplyProps {
   onClickReply: () => void;
   likeCount: number;
   isLiked: boolean;
+  commentId: bigint;
 }
 
 const CommentCardLikeReply: FC<CommentCardLikeReplyProps> = ({
   className = "",
-  likeCount,
+  likeCount: initialLikeCount,
   isLiked: likedProps,
   onClickReply = () => {},
+  commentId,
 }) => {
   const [isLiked, setIsLiked] = useState(likedProps);
+  const [localLikeCount, setLocalLikeCount] = useState(initialLikeCount);
+  const [isLiking, setIsLiking] = useState(false);
+  const dispatch = useAppDispatch();
+  const { connectedAccount } = useAccountStore();
+  const { authorId } = useParams<{ authorId: string }>();
+
+  // Fetch real-time likes count
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!connectedAccount || !authorId) return;
+      
+      try {
+        const likes = await dispatch(getCommentLikes({
+          connectedAccount,
+          authorAddress: authorId,
+          commentId,
+        })).unwrap();
+        
+        setLocalLikeCount(Number(likes));
+      } catch (error) {
+        console.error("Failed to fetch comment likes:", error);
+      }
+    };
+
+    fetchLikes();
+  }, [connectedAccount, authorId, commentId]);
+
+  const handleLikeClick = async () => {
+    if (!connectedAccount || !authorId || isLiking) return;
+
+    setIsLiking(true);
+    try {
+      const success = await dispatch(likeComment({
+        connectedAccount,
+        authorAddress: authorId,
+        commentId,
+      })).unwrap();
+
+      if (success) {
+        setIsLiked(!isLiked);
+        // After successful like/unlike, fetch the updated likes count
+        const updatedLikes = await dispatch(getCommentLikes({
+          connectedAccount,
+          authorAddress: authorId,
+          commentId,
+        })).unwrap();
+        setLocalLikeCount(Number(updatedLikes));
+      }
+    } catch (error) {
+      console.error("Failed to like comment:", error);
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   const renderActionBtns = () => {
     return (
@@ -26,8 +86,9 @@ const CommentCardLikeReply: FC<CommentCardLikeReplyProps> = ({
               ? "text-rose-600 bg-rose-50"
               : "text-neutral-700 bg-neutral-100 dark:text-neutral-200 dark:bg-neutral-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:text-rose-500"
           }`}
-          onClick={() => setIsLiked(!isLiked)}
-          title="Liked"
+          onClick={handleLikeClick}
+          disabled={isLiking}
+          title="Like"
         >
           <svg
             className="h-5 w-5 me-1"
@@ -52,9 +113,10 @@ const CommentCardLikeReply: FC<CommentCardLikeReplyProps> = ({
                 : "text-neutral-900 dark:text-neutral-200"
             }`}
           >
-            {convertNumbThousand(likeCount)}
+            {convertNumbThousand(localLikeCount)}
           </span>
         </button>
+        
         <button
           className={`flex items-center min-w-[68px] rounded-full text-neutral-6000 bg-neutral-100 dark:text-neutral-200 dark:bg-neutral-800 px-3 h-8 hover:bg-teal-50 hover:text-teal-600 dark:hover:text-teal-500 ${twFocusClass()} `}
           title="Reply"

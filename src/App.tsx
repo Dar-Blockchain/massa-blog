@@ -12,6 +12,8 @@ import PostPage from "./pages/PostPage";
 import RequireProfile from "./components/RequireProfile";
 import useAccountSync from "./hooks/useAccountSync";
 import AuthorProfile from "./pages/AuthorProfile";
+import EliteAuthors from "./pages/EliteAuthors";
+import CategoriesPage from "./pages/CategoriesPage";
 
 function App() {
   useAccountSync();
@@ -21,8 +23,9 @@ function App() {
       <RootLayout>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/categories/:categoryId" element={<CategoryPage />} />
-          {/* <Route path="/posts/:postId" element={<PostPage />} /> */}
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/categories/:categoryName" element={<CategoryPage />} />
+          <Route path="/authors" element={<EliteAuthors />} />
           <Route path="/author/:authorId" element={<AuthorProfile />}/>
           <Route path="/author/:authorId/post/:postId" element={<PostPage />}/>
 

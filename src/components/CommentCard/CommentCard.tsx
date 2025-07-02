@@ -9,32 +9,42 @@ import { Link } from "react-router-dom";
 import CommentCardLikeReply from "../CommentCardLikeReply/CommentCardLikeReply";
 import ModalReportItem from "../ModalReportItem/ModalReportItem";
 import twFocusClass from "../../utils/twFocusClass";
+import { Profile } from "../../struct/Profile";
 
 const DEMO_COMMENTS = [
   {
     id: 1,
-    author: null,
+    author: "demo-address-1",
     date: "May 20, 2021",
     content:
       "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
     like: { count: 96, isLiked: false },
+    commenterFirstName: "John",
+    commenterLastName: "Doe",
+    commenterProfilePic: "",
   },
 
   {
     id: 3,
-    author: null,
+    author: "demo-address-3",
     date: "May 20, 2021",
     content:
       "Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.\n\nNullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.",
     like: { count: 66, isLiked: true },
+    commenterFirstName: "Jane",
+    commenterLastName: "Smith",
+    commenterProfilePic: "",
   },
   {
     id: 4,
-    author: null,
+    author: "demo-address-4",
     date: "May 20, 2021",
     content:
       "In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
     like: { count: 45, isLiked: true },
+    commenterFirstName: "Bob",
+    commenterLastName: "Johnson",
+    commenterProfilePic: "",
   },
 ];
 
@@ -47,6 +57,10 @@ export interface CommentType {
     count: number;
     isLiked: boolean;
   };
+  author: string; // commenter address
+  commenterFirstName: string;
+  commenterLastName: string;
+  commenterProfilePic: string;
 }
 
 export interface CommentCardProps {
@@ -60,7 +74,16 @@ const CommentCard: FC<CommentCardProps> = ({
   comment = DEMO_COMMENTS[0],
   size = "large",
 }) => {
-  const { id, date, content, like } = comment;
+  const { id, date, content, like, author, commenterFirstName, commenterLastName, commenterProfilePic } = comment;
+   console.log(like,"aaaaaafffff")
+  // Get display name and avatar from commenter fields
+  const displayName = commenterFirstName && commenterLastName 
+    ? `${commenterFirstName} ${commenterLastName}`.trim()
+    : commenterFirstName || "Anonymous";
+  
+  const avatarSrc = commenterProfilePic || "";
+  const commenterHref = author ? `/author/${author}` : "#";
+
   const actions: NcDropDownItem[] = [
     {
       id: "edit",
@@ -149,13 +172,14 @@ const CommentCard: FC<CommentCardProps> = ({
     <>
       <div className={`nc-CommentCard flex ${className}`}>
         <Avatar
+          imgUrl={avatarSrc}
           sizeClass={`h-6 w-6 text-base ${
             size === "large" ? "sm:text-lg sm:h-8 sm:w-8" : ""
           }`}
           radius="rounded-full"
           containerClassName="mt-4"
         />
-        <div className="flex-grow flex flex-col p-4 ms-2 text-sm border border-neutral-200 rounded-xl sm:ms-3 sm:text-base dark:border-neutral-700">
+        <div className="flex-grow flex flex-col p-4 ml-2 text-sm border border-neutral-200 rounded-xl sm:ml-3 sm:text-base dark:border-neutral-700">
           {/* AUTHOR INFOR */}
           <div className="relative flex items-center pe-6">
             <div className="absolute -end-3 -top-3">
@@ -167,9 +191,9 @@ const CommentCard: FC<CommentCardProps> = ({
             </div>
             <Link
               className="flex-shrink-0 font-semibold text-neutral-800 dark:text-neutral-100"
-              to={AUTHOR.href}
+              to={commenterHref}
             >
-              {AUTHOR.displayName}
+              {displayName}
             </Link>
             <span className="mx-2">·</span>
             <span className="text-neutral-500 dark:text-neutral-400 text-xs line-clamp-1 sm:text-sm">
@@ -191,6 +215,7 @@ const CommentCard: FC<CommentCardProps> = ({
               isLiked={like.isLiked}
               likeCount={like.count}
               onClickReply={() => setIsReplying(true)}
+              commentId={BigInt(id)}
             />
           )}
         </div>

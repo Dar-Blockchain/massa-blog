@@ -41,16 +41,35 @@ export class CategoryService {
         console.error("Deserialization error:", deserializationError);
         throw deserializationError;
       }
-      // return categories;
     } catch (error) {
       console.error("Error fetching categories:", error);
       return [];
     }
   }
 
+  static async getPostsByCategoryName(
+    connectedAccount: any,
+    categoryName: string,
+    page: number = 1
+  ): Promise<Post[]> {
+    if (!connectedAccount) {
+      throw new Error("No connected account");
+    }
+
+    try {
+      
+
+      // Use the existing method with the found category ID
+      return this.getPostsByCategory(connectedAccount, categoryName, page);
+    } catch (error) {
+      console.error("Error fetching posts by category name:", error);
+      return [];
+    }
+  }
+
   static async getPostsByCategory(
     connectedAccount: any,
-    categoryId: string,
+    category: string,
     page: number = 1
   ): Promise<Post[]> {
     if (!connectedAccount) {
@@ -63,27 +82,22 @@ export class CategoryService {
     }
 
     try {
+      console.log('Getting posts for category:', category, 'page:', page);
       const contract = new SmartContract(connectedAccount, contractAddress);
       const args = new Args()
-        .addString(categoryId)
         .addU64(BigInt(page))
-        .serialize();
+        .addString(category);
 
-      const result = await contract.read("getPostsByCategory", args);
+      const result = await contract.read("getPostsByCategory", args.serialize());
 
-      if (result.info.error) {
-        console.error("Smart contract error:", result.info.error);
+      if (result.value) {
+        const posts = new Args(result.value).nextSerializableObjectArray<Post>(Post);
+        console.log('Retrieved', posts.length, 'posts in category', category);
+        return posts;
+      } else {
+        console.error('Failed to get posts by category');
         return [];
       }
-
-      if (!result.value || result.value.length === 0) {
-        return [];
-      }
-
-      const argsForDeserialization = new Args(result.value);
-      const posts =
-        argsForDeserialization.nextSerializableObjectArray<Post>(Post);
-      return posts;
     } catch (error) {
       console.error("Error fetching posts by category:", error);
       return [];

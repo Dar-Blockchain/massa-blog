@@ -148,14 +148,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
         method="POST"
         className="flex-1 text-slate-900 dark:text-slate-200"
       >
-        <div className="bg-slate-50 dark:bg-slate-800 flex items-center space-x-1 rtl:space-x-reverse py-2 px-4 rounded-xl h-full">
-          {renderMagnifyingGlassIcon()}
-          <input
-            type="search"
-            placeholder="Type and press enter"
-            className="border-none bg-transparent focus:outline-none focus:ring-0 w-full text-sm "
-          />
-        </div>
+      
         <input type="submit" hidden value="" />
       </form>
     );

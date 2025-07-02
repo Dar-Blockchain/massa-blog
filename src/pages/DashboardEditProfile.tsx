@@ -24,7 +24,7 @@ const PROFILE_SOCIALS = [
 
 const DashboardEditProfile = () => {
   const { connectedAccount } = useAccountStore();
-  const userProfile = useAppSelector((state) => state.user.user);
+  const userProfile = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -47,23 +47,23 @@ const DashboardEditProfile = () => {
   }, [connectedAccount, dispatch]);
 
   const hasExistingProfile = () => {
-    return !!userProfile && !!userProfile.firstName;
+    return !!userProfile && !!userProfile?.user?.firstName;
   };
 
   useEffect(() => {
     if (userProfile) {
-      setFirstName(userProfile.firstName || "");
-      setLastName(userProfile.lastName || "");
-      setBio(userProfile.bio || "");
-      setProfilePicUrl(userProfile.profilePicUrl || "");
-      setCoverPhotoUrl(userProfile.coverPhotoUrl || "");
-      setEmail(userProfile.email || "");
+      setFirstName(userProfile?.user?.firstName || "");
+      setLastName(userProfile?.user?.lastName || "");
+      setBio(userProfile?.user?.bio || "");
+      setProfilePicUrl(userProfile?.user?.profilePicUrl || "");
+      setCoverPhotoUrl(userProfile?.user?.coverPhotoUrl || "");
+      setEmail(userProfile?.user?.email || "");
       setSocialUrls({
-        facebook: userProfile.facebook || "",
-        twitter: userProfile.twitter || "",
-        linkedin: userProfile.linkedin || "",
-        instagram: userProfile.instagram || "",
-        website: userProfile.website || "",
+        facebook: userProfile?.user?.facebook || "",
+        twitter: userProfile?.user?.twitter || "",
+        linkedin: userProfile?.user?.linkedin || "",
+        instagram: userProfile?.user?.instagram || "",
+        website: userProfile?.user?.website || "",
       });
     }
   }, [userProfile]);
@@ -97,7 +97,7 @@ const DashboardEditProfile = () => {
     );
 
     const profileDataToUpdate = new Profile(
-      userProfile?.profileContract || "",
+      userProfile?.user?.profileContract || "",
       connectedAccount.address,
       firstName,
       lastName,

@@ -325,38 +325,28 @@ export const NAVIGATION_DEMO_2: NavItemType[] = [
   },
   {
     id: randomId(),
-    href: "/blog",
+    href: "/authors",
+    name: "Elite Authors",
+  },
+  {
+    id: randomId(),
+    href: "/dashboard",
+    name: "Dashboard",
+  },
+  {
+    id: randomId(),
+    href: "/categories",
     name: "Blog",
     type: "dropdown",
     children: [
-      { id: randomId(), href: "/category/technology", name: "Technology" },
+      { id: randomId(), href: "/categories/technology", name: "Technology" },
       {
         id: randomId(),
-        href: "/category/decentralization",
+        href: "/categories/decentralization",
         name: "Decentralization",
       },
-      { id: randomId(), href: "/category/community", name: "Community" },
+      { id: randomId(), href: "/categories/community", name: "Community" },
     ],
   },
-  {
-    id: randomId(),
-    href: "/about",
-    name: "About",
-  },
-
-  {
-    id: randomId(),
-    href: "/community",
-    name: "Community",
-  },
-  {
-    id: randomId(),
-    href: "/wallet",
-    name: "Wallet",
-  },
-  {
-    id: randomId(),
-    href: "/help",
-    name: "Help",
-  },
+  
 ];
