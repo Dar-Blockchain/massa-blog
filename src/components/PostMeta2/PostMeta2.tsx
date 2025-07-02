@@ -1,14 +1,11 @@
-import { FC } from "react";
-import { DEMO_POSTS } from "../../data/posts";
-import { PostDataType } from "../../data/types";
+import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "../Avatar/Avatar";
-
-const metaDemo: PostMeta2Props["meta"] = DEMO_POSTS[0];
+import { UIPostDataType } from "../../data/types";
 
 export interface PostMeta2Props {
   className?: string;
-  meta?: Pick<PostDataType, "date" | "author" | "categories" | "readingTime">;
+  meta: UIPostDataType;
   hiddenCategories?: boolean;
   size?: "large" | "normal";
   avatarRounded?: string;
@@ -16,60 +13,48 @@ export interface PostMeta2Props {
 
 const PostMeta2: FC<PostMeta2Props> = ({
   className = "leading-none",
-  meta = metaDemo,
+  meta,
   hiddenCategories = false,
   size = "normal",
   avatarRounded,
 }) => {
-  const { date, author, categories, readingTime } = meta;
+  const { date, author, categories } = meta;
+
   return (
     <div
-      className={`nc-PostMeta2 flex items-center flex-wrap text-neutral-700 text-left dark:text-neutral-200 ${
+      className={`nc-PostMeta2 flex items-center flex-wrap text-neutral-800 dark:text-neutral-200 ${
         size === "normal" ? "text-xs" : "text-sm"
       } ${className}`}
     >
-      <Link
-        to={author.href}
-        className="flex items-center space-x-2 rtl:space-x-reverse"
-      >
+      <div className="flex items-center">
         <Avatar
           radius={avatarRounded}
-          sizeClass={
-            size === "normal"
-              ? "h-6 w-6 text-sm"
-              : "h-10 w-10 sm:h-11 sm:w-11 text-xl"
-          }
-          imgUrl={author.avatar}
-          userName={author.displayName}
+          sizeClass={size === "normal" ? "h-6 w-6" : "h-10 w-10"}
+          imgUrl=""
+          userName={author}
         />
-      </Link>
-      <div className="ms-3">
-        <div className="flex items-center">
-          <Link to={author.href} className="block font-semibold">
-            {author.displayName}
-          </Link>
-
-          {!hiddenCategories && (
-            <>
-              <span className="mx-2 font-semibold">·</span>
-              <div className="ms-0">
-                <span className="text-xs">🏷 </span>
+        <div className="ml-3">
+          <div className="flex items-center">
+            <h4 className="font-semibold">{author}</h4>
+            <span className="mx-2 font-semibold">·</span>
+            <span className="text-neutral-500 dark:text-neutral-400">{date}</span>
+          </div>
+          {!hiddenCategories && categories && categories.length > 0 && (
+            <div className="text-xs mt-[6px]">
+              <span className="text-neutral-500 dark:text-neutral-400">
                 {categories.map((cat, index) => (
-                  <Link key={cat.id} to={cat.href} className="font-semibold">
+                  <Link
+                    key={cat.id}
+                    to={cat.href || "/"}
+                    className="text-neutral-900 dark:text-neutral-200 hover:text-primary-500 dark:hover:text-primary-400"
+                  >
                     {cat.name}
-                    {index < categories.length - 1 && <span>, </span>}
+                    {index < categories.length - 1 && ", "}
                   </Link>
                 ))}
-              </div>
-            </>
+              </span>
+            </div>
           )}
-        </div>
-        <div className="text-xs mt-[6px]">
-          <span className="text-neutral-700 dark:text-neutral-300">{date}</span>
-          <span className="mx-2 font-semibold">·</span>
-          <span className="text-neutral-700 dark:text-neutral-300">
-            {readingTime} min read
-          </span>
         </div>
       </div>
     </div>

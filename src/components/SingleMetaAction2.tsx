@@ -1,5 +1,4 @@
 import { FC } from "react";
-import PostCardLikeAndComment from "./PostCardLikeAndComment/PostCardLikeAndComment";
 import NcDropDown from "./NcDropDown/NcDropDown";
 import { SOCIALS_DATA } from "./SocialsShare/SocialsShare";
 import PostActionDropdown from "./PostActionDropdown/PostActionDropdown";
@@ -12,12 +11,10 @@ const SingleMetaAction2: FC<SingleMetaAction2Props> = ({ className = "" }) => {
   return (
     <div className={`nc-SingleMetaAction2 ${className}`}>
       <div className="flex flex-row space-x-2.5 rtl:space-x-reverse items-center">
-        <PostCardLikeAndComment
-          itemClass="px-4 h-9 text-sm"
-          hiddenCommentOnMobile
-          useOnSinglePage
-          className="!space-x-2.5 rtl:!space-x-reverse"
-        />
+        {/* PostCardLikeAndComment component not available */}
+        <div className="flex items-center space-x-2.5 rtl:space-x-reverse px-4 h-9 text-sm">
+          <span className="text-neutral-500">Like & Comment</span>
+        </div>
         <div className="px-1">
           <div className="border-s border-neutral-200 dark:border-neutral-700 h-6" />
         </div>

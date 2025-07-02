@@ -1,6 +1,7 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import { TaxonomyType } from "../../data/types";
 import { Link } from "react-router-dom";
+import { convertToStaticImageData } from "../../compat/next/image";
 
 export interface CardCategory1Props {
   className?: string;
@@ -19,20 +20,22 @@ const CardCategory1: FC<CardCategory1Props> = ({
       to={href}
       className={`nc-CardCategory1 flex items-center ${className}`}
     >
-      <img
-        alt=""
-        className={`relative flex-shrink-0 ${
+      <div
+        className={`flex-shrink-0 relative ${
           size === "large" ? "w-20 h-20" : "w-12 h-12"
         } rounded-lg me-4 overflow-hidden`}
-        src={thumbnail || ""}
-        // className="object-cover"
-        sizes="80px"
-      />
+      >
+        <img
+          src={convertToStaticImageData(thumbnail || "")}
+          className="object-cover w-full h-full"
+          alt={name}
+        />
+      </div>
       <div>
         <h2
           className={`${
             size === "large" ? "text-lg" : "text-base"
-          } nc-card-title text-neutral-900 dark:text-neutral-100 text-sm sm:text-base font-medium sm:font-semibold`}
+          } nc-card-title text-neutral-900 dark:text-neutral-100 font-semibold`}
         >
           {name}
         </h2>

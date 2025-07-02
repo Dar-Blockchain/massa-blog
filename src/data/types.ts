@@ -47,6 +47,17 @@ export interface PostDataType {
   createdAt: string; // ISO string from bigint
 }
 
+export interface UIPostDataType extends PostDataType {
+  href?: string;
+  desc?: string;
+  date?: string;
+  postType?: "standard" | "video" | "gallery" | "audio";
+  videoUrl?: string;
+  audioUrl?: string;
+  galleryImgs?: string[];
+  categories?: TaxonomyType[];
+}
+
 export type TwMainColor =
   | "pink"
   | "green"

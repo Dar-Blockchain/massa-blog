@@ -1,9 +1,10 @@
-import { FC } from "react";
+import React, { FC } from "react";
 
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { TaxonomyType, TwMainColor } from "../../data/types";
 import { Link } from "react-router-dom";
 import Badge from "../Badge/Badge";
+import { convertToStaticImageData } from "../../compat/next/image";
 
 export interface CardCategory5Props {
   className?: string;
@@ -21,16 +22,23 @@ const CardCategory5: FC<CardCategory5Props> = ({
       to={href}
       className={`nc-CardCategory5 relative block group ${className}`}
     >
-      <div
-        className={`flex-shrink-0 relative w-full aspect-w-8 aspect-h-5 h-0 rounded-3xl overflow-hidden z-0 group`}
-      >
-        <img
-          alt="thumbnail"
-          src={thumbnail || ""}
-          className="object-cover w-full h-full rounded-2xl"
-          sizes="(min-width: 1024px) 20rem, (min-width: 640px) 16rem, 12rem"
-        />
-        <span className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-colors"></span>
+      <div className="flex-shrink-0 relative w-full aspect-w-8 aspect-h-5 h-0 rounded-3xl overflow-hidden z-0">
+        <div>
+          <div className="absolute inset-5">
+            <img
+              src={convertToStaticImageData(thumbnail || "")}
+              className="absolute end-0 w-1/2 max-w-[260px] h-full object-contain"
+              alt={name}
+            />
+          </div>
+        </div>
+        <span className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800"></span>
+        <div className="absolute inset-5 flex flex-col">
+          <div className="max-w-xs">
+            <span className="opacity-75">{count} Articles</span>
+            <h2 className={`mt-4 text-xl sm:text-2xl font-semibold`}>{name}</h2>
+          </div>
+        </div>
       </div>
       <Badge
         className="absolute top-3 end-3"
@@ -42,13 +50,6 @@ const CardCategory5: FC<CardCategory5Props> = ({
           </div>
         }
       />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <h2
-          className={`text-base font-medium px-4 py-2 sm:px-6 sm:py-3 bg-white text-neutral-900 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-full border-2 border-white border-opacity-60`}
-        >
-          {name}
-        </h2>
-      </div>
     </Link>
   );
 };

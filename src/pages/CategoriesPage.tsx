@@ -84,7 +84,7 @@ const CategoriesPage: React.FC = () => {
                   <NcImage
                     containerClassName="aspect-w-7 aspect-h-5"
                     className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
-                    src={category.thumbnail || ''}
+                    src={typeof category.thumbnail === 'string' ? category.thumbnail : ''}
                     alt={category.name}
                   />
                 </div>

@@ -252,7 +252,7 @@ const SearchModal: FC<Props> = ({ renderTrigger }) => {
                                 }
                               >
                                 <img
-                                  src={user.avatar}
+                                  src={typeof user.avatar === 'string' ? user.avatar : ''}
                                   alt="author"
                                   className="h-6 w-6 flex-none rounded-full"
                                   sizes="30px"
